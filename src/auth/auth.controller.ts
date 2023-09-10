@@ -1,4 +1,10 @@
-import { Controller, Post, Body, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -16,6 +22,5 @@ export class AuthController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
     return result;
-
   }
 }

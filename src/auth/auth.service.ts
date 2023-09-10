@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from 'nestjs-typegoose';
-import { UserModel } from 'src/user/user.model';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +12,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.findUserByEmail(email);
     if (user && user.password === password) {
-      const payload = { email: user.email, sub: user.password};
+      const payload = { email: user.email, sub: user.password };
       const token = this.jwtService.sign(payload);
       return { token };
     }
