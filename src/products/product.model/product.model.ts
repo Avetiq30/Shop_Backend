@@ -1,17 +1,17 @@
-import {Column} from 'typeorm'
+import {getModelForClass, prop} from '@typegoose/typegoose'
 export class Product {
-@Column()
-name: string;
+    @prop({ required: true })
+    name: string;
+  
+    @prop({ required: true })
+    category: string;
+  
+    @prop({ required: true, type: () => Number }) 
+    price: number;
+  
+    @prop({ required: true })
+    description: string;
+  }
 
-@Column()
-category: string;
+  export const ProductModel = getModelForClass(Product);
 
-@Column('decimal', { precision: 10, scale: 2 })
-price: number;
-
-@Column('text')
-description: string;
-
- @Column()
-image: string;
-}

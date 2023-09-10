@@ -18,9 +18,9 @@ export class CreateProductDto{
    @IsString()
    description: string;
 
-   @IsNotEmpty()
-   @IsString()
-   image: string
+//    @IsNotEmpty()
+//    @IsString()
+//    image: string
 }
 
 export class UpdateProductDto{
@@ -41,7 +41,7 @@ export class UpdateProductDto{
     @IsString()
     description: string;
 
-    @IsNotEmpty()
-    @IsString()
-    image: string
+    // @IsNotEmpty()
+    // @IsString()
+    // image: string
 }

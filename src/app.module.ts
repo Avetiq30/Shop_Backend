@@ -13,12 +13,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMongoConfig } from 'configs/mongo.config';
 
 @Module({
-  imports: [TypegooseModule.forRootAsync({
-    imports:[ConfigModule],
-    inject:[ConfigService],
-    useFactory: getMongoConfig
-  }),
-     AuthModule, CartModule, CategoryModule, FilesModule, OrderModule, ProductsModule, UserModule],
+  imports: [
+    ConfigModule.forRoot(),
+    TypegooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getMongoConfig,
+    }),
+    AuthModule,
+    CartModule,
+    CategoryModule,
+    FilesModule,
+    OrderModule,
+    ProductsModule,
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

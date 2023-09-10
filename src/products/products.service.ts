@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Product } from './product.model/product.model';
+import {   ProductModel } from './product.model/product.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { InjectModel } from 'nestjs-typegoose';
 
 @Injectable()
 export class ProductsService {
-    constructor(@InjectModel(Product)
-    private readonly productModel:ModelType<Product>
+    constructor(@InjectModel(ProductModel)
+    private readonly productModel:ModelType<ProductModel>
     ){}
 
     async createProduct(createProductDto:CreateProductDto):Promise<Product>{

@@ -15,7 +15,5 @@ constructor(
                     secretOrKey: configService.get('JWT_SECRET')
                 })
             }
-            async validate(payload:any){
-                return await this.authService.validateUser(payload.sub)
-            }
+          
 }
