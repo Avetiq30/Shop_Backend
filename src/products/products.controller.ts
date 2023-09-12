@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { Product } from './product.model/product.model';
+import { ProductModel } from './product.model/product.model';
 
 @Controller('products')
 export class ProductsController {
@@ -18,22 +18,22 @@ export class ProductsController {
   @Post('create')
   async createProduct(
     @Body() createProductDto: CreateProductDto,
-  ): Promise<Product> {
+  ): Promise<ProductModel> {
     return await this.productService.createProduct(createProductDto);
   }
   @Get()
-  async getAllProduct(): Promise<Product[]> {
+  async getAllProduct(): Promise<ProductModel[]> {
     return await this.productService.getAllProduct();
   }
   @Get(':id')
-  async getProductById(@Param('id') id: string): Promise<Product> {
+  async getProductById(@Param('id') id: string): Promise<ProductModel> {
     return await this.productService.getProductById(id);
   }
-  @Put('id')
+  @Put(':id')
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
+  ): Promise<any> {
     return await this.productService.updateProduct(id, updateProductDto);
   }
   @Delete(':id')

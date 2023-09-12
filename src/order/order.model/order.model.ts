@@ -1,4 +1,4 @@
-import { Product } from 'src/products/product.model/product.model';
+import { ProductModel } from 'src/products/product.model/product.model';
 import { Column, CreateDateColumn, JoinTable, ManyToMany } from 'typeorm';
 export class OrderModel {
   @Column()
@@ -10,7 +10,7 @@ export class OrderModel {
   @CreateDateColumn()
   orderDate: Date;
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => ProductModel)
   @JoinTable()
-  products: Product[];
+  products: ProductModel[];
 }

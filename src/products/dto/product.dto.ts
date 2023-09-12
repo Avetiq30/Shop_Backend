@@ -7,7 +7,7 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  category: string;
+  categoryId: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -29,7 +29,7 @@ export class UpdateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  category: string;
+  categoryId: string;
 
   @IsNotEmpty()
   @IsNumber()
