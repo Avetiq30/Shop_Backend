@@ -1,17 +1,15 @@
-import {getModelForClass, prop} from '@typegoose/typegoose'
-export class Product {
-    @prop({ required: true })
-    name: string;
-  
-    @prop({ required: true })
-    category: string;
-  
-    @prop({ required: true, type: () => Number }) 
-    price: number;
-  
-    @prop({ required: true })
-    description: string;
-  }
+import { Ref, prop } from '@typegoose/typegoose';
+import { CategoryModel } from 'src/category/category.model';
+export class ProductModel {
+  @prop({ required: true })
+  name: string;
 
-  export const ProductModel = getModelForClass(Product);
+  @prop({ ref: () => CategoryModel, required: true })
+  category!: Ref<CategoryModel>;
 
+  @prop({ required: true, type: () => Number })
+  price: number;
+
+  @prop({ required: true })
+  description: string;
+}

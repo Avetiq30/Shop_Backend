@@ -1,6 +1,6 @@
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { prop } from '@typegoose/typegoose';
 
-export  class UserModel {
+export class UserModel {
   @prop({ required: true })
   public name!: string;
 
@@ -19,5 +19,3 @@ export  class UserModel {
   @prop({ default: Date.now })
   public updatedAt?: Date;
 }
-
-

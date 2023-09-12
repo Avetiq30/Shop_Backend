@@ -1,4 +1,4 @@
 export class CartModel {
-    productId: string; 
-    quantity: number; 
+  productId: string;
+  quantity: number;
 }

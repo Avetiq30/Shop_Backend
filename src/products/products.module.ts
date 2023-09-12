@@ -3,12 +3,22 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { ProductModel } from './product.model/product.model';
-
+import { CategoryModule } from 'src/category/category.module';
 
 @Module({
-    imports:[TypegooseModule.forFeature([ProductModel])],
-    providers:[ProductsService],
-    controllers:[ProductsController],
-    exports:[ProductsService]
+  imports: [
+    CategoryModule,
+    TypegooseModule.forFeature([
+      {
+        typegooseClass: ProductModel,
+        schemaOptions: {
+          collection: 'products',
+        },
+      },
+    ]),
+  ],
+  providers: [ProductsService],
+  controllers: [ProductsController],
+  exports: [ProductsService],
 })
 export class ProductsModule {}
