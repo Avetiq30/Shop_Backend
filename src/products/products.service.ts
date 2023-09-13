@@ -22,13 +22,13 @@ export class ProductsService {
       throw new NotFoundException(NOT_FOUND_CATEGORY);
     }
     const newProduct = new this.productModel({ ...createProductDto, category });
-    return await newProduct.save();
+    return  newProduct.save();
   }
   async getAllProduct(): Promise<any[]> {
-    return await this.productModel.find().exec();
+    return  this.productModel.find().exec();
   }
   async getProductById(id: string): Promise<any | null> {
-    const product = await this.productModel.findById(id).exec();
+    const product =  this.productModel.findById(id).exec();
     if (!product) {
       throw new NotFoundException(PRODUCT_NOT_FOUND);
     }

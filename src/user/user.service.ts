@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,9 @@ export class UserService {
   ) {}
 
   async createUser(user: UserModel): Promise<UserModel> {
-    const createdUser = new this.userModel(user);
+    const hashPassword =  bcrypt.hash(user.password, 10);
+    const newUser = { ...user, password: hashPassword };
+    const createdUser = new this.userModel(newUser);
     return createdUser.save();
   }
 

@@ -21,6 +21,6 @@ export class AuthController {
     if (!result) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
-    return result;
+    return { token: result.token };
   }
 }
