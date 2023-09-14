@@ -10,16 +10,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async isValidateUser(email: string, password: string): Promise<boolean> {
     const user = await this.userService.findUserByEmail(email);
-    if (user) {
-      const isPasswordValid =  bcrypt.compare(password, user.password);
-      if (isPasswordValid) {
-        const payload = { email: user.email, sub: user.password };
-        const token = this.jwtService.sign(payload);
-        return { token };
-      }
+    if (!user) {
+      return false;
     }
-    return null;
+    return bcrypt.compare(password, user.password);
+  }
+
+  async generateAccessToken(payload): Promise<string> {
+    return this.jwtService.sign(payload);
+  }
+
+  async login(email: string, password: string): Promise<string | null> {
+    const isValidateUser = await this.isValidateUser(email, password);
+    if (!isValidateUser) {
+      return null;
+    }
+    return this.generateAccessToken({ email });
   }
 }

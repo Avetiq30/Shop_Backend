@@ -3,7 +3,7 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { ProductModel } from './product.model/product.model';
-import { CategoryModule } from 'src/category/category.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [

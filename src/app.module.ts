@@ -10,7 +10,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getMongoConfig } from 'configs/mongo.config';
+import { getMongoConfig } from '../configs/mongo.config';
 
 @Module({
   imports: [

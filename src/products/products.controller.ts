@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -27,7 +29,14 @@ export class ProductsController {
   }
   @Get(':id')
   async getProductById(@Param('id') id: string): Promise<ProductModel> {
-    return await this.productService.getProductById(id);
+    try {
+      return await this.productService.getProductById(id);
+    } catch (e) {
+      throw new HttpException(
+        'Could not found product by id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
   @Put(':id')
   async updateProduct(
