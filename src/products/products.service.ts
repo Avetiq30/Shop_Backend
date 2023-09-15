@@ -51,7 +51,7 @@ export class ProductsService {
     await this.productModel.findByIdAndRemove(id).exec();
   }
 
-  async deleteAll(){
-    return getModelForClass(ProductModel).deleteMany({})
+  async deleteAll() {
+    return getModelForClass(ProductModel).deleteMany({});
   }
 }

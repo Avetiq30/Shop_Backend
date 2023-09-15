@@ -13,21 +13,21 @@ export class CategoryService {
 
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<any> {
     const category = new this.categoryModel(createCategoryDto);
-    return  category.save();
+    return category.save();
   }
 
   async getAllCategories(): Promise<any[]> {
-    return  this.categoryModel.find().exec();
+    return this.categoryModel.find().exec();
   }
   async getCategoryById(id: string): Promise<CategoryModel | null> {
-    return  this.categoryModel.findById(id).exec();
+    return this.categoryModel.findById(id).exec();
   }
 
   async updateCategory(
     id: string,
     name: string,
   ): Promise<CategoryModel | null> {
-    return  this.categoryModel.findByIdAndUpdate({ id, name }).exec();
+    return this.categoryModel.findByIdAndUpdate({ id, name }).exec();
   }
 
   async deleteCategory(id: string): Promise<void> {

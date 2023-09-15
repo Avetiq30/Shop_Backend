@@ -1,63 +1,71 @@
-import { Test, TestingModule} from "@nestjs/testing"
-import { HttpStatus, INestApplication} from "@nestjs/common"
-import * as request from "supertest"
-import { AppModule } from "../src/app.module"
-import { UserService } from "../src/user/user.service"
-import { UserModel } from "../src/user/user.model"
-import * as bcrypt from 'bcrypt'
+import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from '../src/app.module';
+import { UserService } from '../src/user/user.service';
+import { UserModel } from '../src/user/user.model';
+import { BcryptService } from '../src/auth/bcrypt.service';
+import { userData } from './userHelper';
+import { USER_WITH_THIS_EMAIL } from '../src/user/user.constants';
 
+describe('UserController', () => {
+  let app: INestApplication;
+  let userService: UserService;
+  let bcryptService: BcryptService;
 
-describe('UserController', ()=>{
-    let app: INestApplication
-    let userService: UserService
+  afterAll(async () => {
+    await userService.deleteAll();
+    await app.close();
+  });
 
-    afterAll(async()=>{
-        await userService.deleteAll()
-    })
-    
-    beforeAll(async ()=>{
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports:[AppModule],
-        }).compile()
-        
-        app = moduleFixture.createNestApplication();
-        userService = moduleFixture.get<UserService>(UserService);
-        await app.init()
-    })
-    afterAll(async () => {
-        await app.close();
-      })
-    
-describe('When registering a user',()=>{
-    it('should register a user success',async ()=>{
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-        const loginData = {
-            email: "testing@mail.ru",
-            password: "test123"
-        }
-       const userData: UserModel  =  {
-           name:'test',
-           lastname:"lasttest",
-           email:loginData.email,
-           password:loginData.password,
-       }
-       const hashedPassword = await bcrypt.hash(userData.password, 10);
-       const user: UserModel = {
-         ...userData,
-         password: hashedPassword, 
-       };
-       
-       const response = await request(app.getHttpServer())
-       .post('/user/register')
-       .send(userData)
-       expect(HttpStatus.OK)
-       
-       const isPasswordMatch = await bcrypt.compare(userData.password, response.body.password);
-      expect(isPasswordMatch).toBe(true)
-      expect(response.body.name).toBe(user.name)
-      expect(response.body.lastname).toBe(user.lastname)
-      expect(response.body.email).toBe(user.email)
-      
-    })
-})
-})
+    app = moduleFixture.createNestApplication();
+    userService = moduleFixture.get<UserService>(UserService);
+    bcryptService = moduleFixture.get<BcryptService>(BcryptService);
+    await app.init();
+  });
+
+  describe('When trying registering a new user', () => {
+    it('should be success', async () => {
+      const hashedPassword = await bcryptService.hashPassword(
+        userData.password,
+        10,
+      );
+      const user: UserModel = {
+        ...userData,
+        password: hashedPassword,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/user/register')
+        .send(userData);
+      expect(HttpStatus.OK);
+
+      expect(response.body.password).toBeDefined();
+      expect(response.body.name).toBe(user.name);
+      expect(response.body.lastname).toBe(user.lastname);
+      expect(response.body.email).toBe(user.email);
+    });
+  });
+  describe('When trying to register new user and user email already exist', () => {
+    it('should be error', async () => {
+      await userService.createUser(userData);
+
+      const loginData = {
+        email: 'testing@mail.ru',
+        password: 'test123',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/user/register')
+        .send(loginData)
+        .expect(HttpStatus.BAD_REQUEST);
+
+      expect(response.body.message).toBe(USER_WITH_THIS_EMAIL);
+    });
+  });
+});

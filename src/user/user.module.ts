@@ -3,6 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { UserModel } from '../user/user.model';
+import { BcryptService } from '../auth/bcrypt.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UserModel } from '../user/user.model';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService, UserModel],
+  providers: [UserService, BcryptService, UserModel],
   exports: [UserService],
 })
 export class UserModule {}

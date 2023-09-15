@@ -1,92 +1,80 @@
-import { Test, TestingModule} from "@nestjs/testing"
-import { HttpStatus, INestApplication} from "@nestjs/common"
-import * as request from "supertest"
-import { AppModule } from "../src/app.module"
-import {ProductsService} from '../src/products/products.service'
-import { CreateProductDto, UpdateProductDto } from "src/products/dto/product.dto"
+import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from '../src/app.module';
+import { ProductsService } from '../src/products/products.service';
+import { UpdateProductDto } from '../src/products/dto/product.dto';
+import { createProductDto } from './productHelper';
 
+describe('ProductsController', () => {
+  let app: INestApplication;
+  let productService: ProductsService;
 
+  beforeEach(async () => {
+    await productService.deleteAll();
+  });
 
+  afterAll(async () => {
+    await productService.deleteAll();
+    await app.close();
+  });
 
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-describe('ProductsController',()=>{
-    let app:INestApplication
-    let productService:ProductsService
+    app = moduleFixture.createNestApplication();
+    productService = moduleFixture.get<ProductsService>(ProductsService);
+    await app.init();
+  });
 
-    
-    beforeEach(async()=>{
-        await productService.deleteAll()
-    })
+  describe('When trying to create product', () => {
+    it('should be access', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/products')
+        .send(createProductDto);
+      expect(HttpStatus.OK);
 
-    afterAll(async()=>{
-        await productService.deleteAll()
-    })
+      expect(response.body.name).toBe(createProductDto.name);
+      expect(response.body.description).toBe(createProductDto.description);
+      expect(response.body.price).toBe(createProductDto.price);
+      expect(response.body.category._id).toBe(createProductDto.categoryId);
+    });
+  });
 
-    beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-          imports: [AppModule],
-        }).compile()
-    
-        app = moduleFixture.createNestApplication();
-        productService = moduleFixture.get<ProductsService>(ProductsService);
-        await app.init();
-      })
-      afterAll(async()=>{
-        await app.close()
-      })
- 
-      describe('Created product', ()=>{
-        it('should be access',async()=>{
-          
-            const  createProduct:CreateProductDto = {
-                name:"testProduct",
-                description:"test product",
-                price:555,
-                categoryId:'65003f18dddfccf4b0b23052'
-            }
-            const response = await request(app.getHttpServer())
-            .post('/products/create')
-            .send(createProduct)
-            expect(HttpStatus.OK) 
-            
-            expect(response.body.name).toBe(createProduct.name)
-            expect(response.body.description).toBe(createProduct.description)
-            expect(response.body.price).toBe(createProduct.price)
-            expect(response.body.category._id).toBe(createProduct.categoryId)
+  describe('When trying update a product', () => {
+    it('should be access', async () => {
+      const createdProduct =
+        await productService.createProduct(createProductDto);
+      const updateProductDto: UpdateProductDto = {
+        name: 'updateTest',
+        price: 299,
+      };
 
-           
-        })
-      })
+      const response = await request(app.getHttpServer())
+        .put(`/products/${createdProduct.id}`)
+        .send(updateProductDto)
+        .expect(HttpStatus.OK);
 
-      describe('Update a product', ()=>{
-        it('should be access',async()=>{
-            const  createProductDto:CreateProductDto = {
-                name:"testProduct",
-                description:"test product",
-                price:555,
-                categoryId:'65003f18dddfccf4b0b23052'
-            }
+      expect(response.body._id).toBe(createdProduct.id);
+      expect(response.body.name).toBe(updateProductDto.name);
+      expect(response.body.price).toBe(updateProductDto.price);
+      expect(response.body.categoryId).toBe(createdProduct.categoryId);
+      expect(response.body.description).toBe(createdProduct.description);
+    });
+  });
 
-            const createdProduct = await productService.createProduct(createProductDto)
-           
+  describe('When trying product by id and product is not exist', () => {
+    it('should be error', async () => {
+      const invalidId = 'invalidId';
 
-            const updateProductDto:UpdateProductDto = {
-                name:'updateTest',
-                price:299
-            }
-            
-            const response = await request(app.getHttpServer())
-            .put(`/products/${createdProduct.id}`)
-            .send(updateProductDto)
-            .expect(HttpStatus.OK)
+      const response = await request(app.getHttpServer())
+        .get(`/products/${invalidId}`)
+        .send(createProductDto)
+        .expect(HttpStatus.NOT_FOUND);
 
-            expect(response.body).toMatchObject(updateProductDto)
-
-            const updatedProduct = await productService.getProductById(createdProduct.id)
-           
-            
-            expect(updatedProduct.name).toBe(updateProductDto.name)
-            expect(updatedProduct.price).toBe(updateProductDto.price)
-        })
-      })
-})
+      expect(response.body.message).toBe('Could not found product by id');
+    });
+  });
+});
