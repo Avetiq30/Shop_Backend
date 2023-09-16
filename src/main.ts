@@ -9,6 +9,8 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  await app.listen(PORT);
+  await app.listen(PORT, () => {
+    console.log('server running on port ', PORT);
+  });
 }
 bootstrap();
