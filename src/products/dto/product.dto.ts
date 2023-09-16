@@ -25,19 +25,19 @@ export class CreateProductDto {
 export class UpdateProductDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsNotEmpty()
   @IsString()
-  categoryId: string;
+  categoryId?: string;
 
   @IsNotEmpty()
   @IsNumber()
-  price: number;
+  price?: number;
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  description?: string;
 
   // @IsNotEmpty()
   // @IsString()

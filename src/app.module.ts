@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CartModule } from './cart/cart.module';
 import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
@@ -10,7 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getMongoConfig } from 'configs/mongo.config';
+import { getMongoConfig } from '../configs/mongo.config';
 
 @Module({
   imports: [
@@ -28,7 +26,5 @@ import { getMongoConfig } from 'configs/mongo.config';
     ProductsModule,
     UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

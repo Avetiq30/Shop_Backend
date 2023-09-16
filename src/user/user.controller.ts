@@ -1,4 +1,10 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserModel } from './user.model';
 import { USER_WITH_THIS_EMAIL } from './user.constants';
@@ -11,7 +17,7 @@ export class UserController {
   async registerUser(@Body() userData: UserModel) {
     const existingUser = await this.userService.findUserByEmail(userData.email);
     if (existingUser) {
-      throw new Error(USER_WITH_THIS_EMAIL);
+      throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.BAD_REQUEST);
     }
     const createdUser = await this.userService.createUser(userData);
 
