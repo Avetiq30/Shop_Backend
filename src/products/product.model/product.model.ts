@@ -12,4 +12,7 @@ export class ProductModel {
 
   @prop({ required: true })
   description: string;
+
+  @prop()
+  image: string;
 }

@@ -16,8 +16,8 @@ export class ProductsService {
   ) {}
 
   async createProduct(createProductDto: CreateProductDto): Promise<any> {
-    const category = await this.categoryService.getCategoryById(
-      createProductDto.categoryId,
+    const category = await this.categoryService.getCategoryByName(
+      createProductDto.category,
     );
     if (!category) {
       throw new NotFoundException(NOT_FOUND_CATEGORY);
@@ -25,6 +25,7 @@ export class ProductsService {
     const newProduct = new this.productModel({ ...createProductDto, category });
     return newProduct.save();
   }
+
   async getAllProduct(): Promise<ProductModel[] | null> {
     return this.productModel.find().exec();
   }

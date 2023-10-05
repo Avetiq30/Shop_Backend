@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ProductsService } from '../src/products/products.service';
 import { UpdateProductDto } from '../src/products/dto/product.dto';
-import { createProductDto } from './productHelper';
+import { createProductDto } from './helpers/productHelper';
 
 describe('ProductsController', () => {
   let app: INestApplication;

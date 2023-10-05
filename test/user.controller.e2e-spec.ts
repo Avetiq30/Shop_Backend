@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 import { UserService } from '../src/user/user.service';
 import { UserModel } from '../src/user/user.model';
 import { BcryptService } from '../src/auth/bcrypt.service';
-import { userData } from './userHelper';
+import { userData } from './helpers/userHelper';
 import { USER_WITH_THIS_EMAIL } from '../src/user/user.constants';
 
 describe('UserController', () => {
@@ -51,6 +51,7 @@ describe('UserController', () => {
       expect(response.body.email).toBe(user.email);
     });
   });
+
   describe('When trying to register new user and user email already exist', () => {
     it('should be error', async () => {
       await userService.createUser(userData);
