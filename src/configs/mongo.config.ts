@@ -1,5 +1,4 @@
 import { ConfigService } from '@nestjs/config';
-import { log } from 'console';
 import { TypegooseModuleOptions } from 'nestjs-typegoose';
 
 export const getMongoConfig = async (

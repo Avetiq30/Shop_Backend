@@ -66,7 +66,7 @@ export class ProductsController {
       ...updateProductDto,
       imageUrl: updateProductDto.image,
     };
-    return await this.productService.updateProduct(id, updateProductDto);
+    return await this.productService.updateProduct(id, productData);
   }
 
   @Delete(':id')
