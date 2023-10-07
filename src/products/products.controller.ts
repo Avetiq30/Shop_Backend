@@ -22,10 +22,10 @@ export class ProductsController {
   constructor(private readonly productService: ProductsService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', multerConfig)) // Используйте настройки multer
+  @UseInterceptors(FileInterceptor('file', multerConfig))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
-    // Обработка загруженного файла
+    return file;
   }
 
   @Post()
@@ -33,15 +33,10 @@ export class ProductsController {
     @UploadedFile() image: Express.Multer.File,
     @Body() createProductDto: CreateProductDto,
   ): Promise<ProductModel> {
-    // if (!image) {
-    //   throw new HttpException('Image file is missing', HttpStatus.BAD_REQUEST);
-    // }
     const productData = {
       ...createProductDto,
-      imageUrl: image.filename, // Присвойте имя загруженного файла полю imageUrl
+      imageUrl: createProductDto.image,
     };
-    console.log(productData);
-
     return await this.productService.createProduct(productData);
   }
   @Get()
@@ -64,8 +59,13 @@ export class ProductsController {
   @Put(':id')
   async updateProduct(
     @Param('id') id: string,
+    @UploadedFile() image: Express.Multer.File,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<any> {
+    const productData = {
+      ...updateProductDto,
+      imageUrl: updateProductDto.image,
+    };
     return await this.productService.updateProduct(id, updateProductDto);
   }
 
