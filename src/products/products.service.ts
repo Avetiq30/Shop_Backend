@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductModel } from './product.model/product.model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
 import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './constants';
 import { getModelForClass } from '@typegoose/typegoose';
+import { ProductCreateDto } from './dto/product-create.dto';
+import { ProductUpdateDto } from './dto/product-update.dto';
 
 @Injectable()
 export class ProductsService {
@@ -15,7 +16,7 @@ export class ProductsService {
     private readonly categoryService: CategoryService,
   ) {}
 
-  async createProduct(createProductDto: CreateProductDto): Promise<any> {
+  async createProduct(createProductDto: ProductCreateDto): Promise<any> {
     const category = await this.categoryService.getCategoryByName(
       createProductDto.category,
     );
@@ -35,7 +36,7 @@ export class ProductsService {
 
   async updateProduct(
     id: string,
-    updateProductDto: UpdateProductDto,
+    updateProductDto: Partial<ProductUpdateDto>,
   ): Promise<ProductModel> {
     const updatedProduct = await this.productModel
       .findOneAndUpdate({ _id: id }, updateProductDto, { new: true })

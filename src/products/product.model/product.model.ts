@@ -14,5 +14,5 @@ export class ProductModel {
   description: string;
 
   @prop()
-  image: string;
+  imageId: string;
 }

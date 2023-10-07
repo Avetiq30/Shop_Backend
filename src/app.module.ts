@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMongoConfig } from './configs/mongo.config';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { getMongoConfig } from './configs/mongo.config';
     OrderModule,
     ProductsModule,
     UserModule,
+    FileModule,
   ],
 })
 export class AppModule {}
