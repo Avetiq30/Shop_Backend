@@ -1,10 +1,11 @@
-import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
 import { USER_WITH_THIS_EMAIL } from './user.constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -12,12 +13,13 @@ export class UserService {
     @InjectModel(UserModel)
     private readonly userModel: ReturnModelType<typeof UserModel>,
     private readonly bcryptService: BcryptService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createUser(user: UserModel): Promise<UserModel> {
     const hashedPassword = await this.bcryptService.hashPassword(
       user.password,
-      10,
+      parseInt(this.configService.get('SALT_ROUND')),
     );
     const newUser = { ...user, password: hashedPassword };
     const createdUser = new this.userModel(newUser);
