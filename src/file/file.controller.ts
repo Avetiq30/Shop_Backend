@@ -15,7 +15,7 @@ import { FileModel } from './file.model';
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
-  
+
   @Post()
   @UseInterceptors(FileInterceptor('file', multerConfig))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -33,14 +33,12 @@ export class FileController {
 
   @Get()
   async getFileList(): Promise<FileModel[]> {
-    return  await this.fileService.getFileList();
-   
+    return await this.fileService.getFileList();
   }
 
   @Delete(':id')
   deleteFileById(@Param('id') id: string) {
-      const deletedFile = this.fileService.deleteFileById(id);
-      return deletedFile;
-    }
+    const deletedFile = this.fileService.deleteFileById(id);
+    return deletedFile;
   }
-
+}

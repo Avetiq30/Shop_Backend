@@ -13,7 +13,7 @@ export class AuthService {
 
   private activeTokens: string[] = [];
 
-  async generateAccessToken(payload:any): Promise<string> {
+  async generateAccessToken(payload: any): Promise<string> {
     return this.jwtService.sign(payload);
   }
 
@@ -38,7 +38,7 @@ export class AuthService {
   }
   async logout(req: any): Promise<any> {
     if (req.session) {
-      req.session.destroy(); 
+      req.session.destroy();
     }
     return { message: 'Logged out successfully' };
   }

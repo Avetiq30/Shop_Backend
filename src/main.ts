@@ -23,7 +23,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'JWT_SECRET', 
+      secret: 'JWT_SECRET',
       resave: false,
       saveUninitialized: false,
     }),

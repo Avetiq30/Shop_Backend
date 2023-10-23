@@ -23,11 +23,11 @@ export class FileService {
     return this.fileModel.find();
   }
 
-  deleteFileById(id:string) {
+  deleteFileById(id: string) {
     // check if file used in products
     // delete file from mongodb
     // delete file from upload dir
-    const deletedFile =  this.fileModel.findByIdAndDelete(id)
+    const deletedFile = this.fileModel.findByIdAndDelete(id);
     if (!deletedFile) {
       throw new Error('File not found');
     }

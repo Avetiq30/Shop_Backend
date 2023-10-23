@@ -6,7 +6,6 @@ import {
   HttpException,
   HttpCode,
   Req,
-  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 

@@ -14,7 +14,6 @@ import { ProductsService } from './products.service';
 import { ProductModel } from './product.model/product.model';
 import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
-import { log } from 'console';
 
 @Controller('products')
 export class ProductsController {
@@ -24,7 +23,7 @@ export class ProductsController {
   async createProduct(
     @Body() createProductDto: ProductCreateDto,
   ): Promise<ProductModel> {
-   return this.productService.createProduct(createProductDto);
+    return this.productService.createProduct(createProductDto);
   }
   @Get()
   async getAllProduct(
@@ -33,7 +32,11 @@ export class ProductsController {
     @Query('category') category: string,
     // @Query('addedDate') addedDate: string,
   ): Promise<ProductModel[]> {
-    return await this.productService.getAllProduct(minPrice, maxPrice, category, );
+    return await this.productService.getAllProduct(
+      minPrice,
+      maxPrice,
+      category,
+    );
   }
 
   @Get(':id')
@@ -60,5 +63,4 @@ export class ProductsController {
   async deleteProduct(@Param('id') id: string): Promise<void> {
     return await this.productService.deleteProduct(id);
   }
-
 }
