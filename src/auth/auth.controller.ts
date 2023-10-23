@@ -5,6 +5,8 @@ import {
   HttpStatus,
   HttpException,
   HttpCode,
+  Req,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
@@ -26,7 +28,10 @@ export class AuthController {
         HttpStatus.FORBIDDEN,
       );
     }
-
     return { token };
+  }
+  @Post('logout')
+  async logout(@Req() req: any): Promise<any> {
+    return this.authService.logout(req);
   }
 }

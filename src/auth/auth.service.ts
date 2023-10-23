@@ -11,7 +11,9 @@ export class AuthService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  async generateAccessToken(payload): Promise<string> {
+  private activeTokens: string[] = [];
+
+  async generateAccessToken(payload:any): Promise<string> {
     return this.jwtService.sign(payload);
   }
 
@@ -33,5 +35,11 @@ export class AuthService {
     }
 
     return this.generateAccessToken({ email });
+  }
+  async logout(req: any): Promise<any> {
+    if (req.session) {
+      req.session.destroy(); 
+    }
+    return { message: 'Logged out successfully' };
   }
 }

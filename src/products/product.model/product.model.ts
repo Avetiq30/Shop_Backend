@@ -13,6 +13,8 @@ export class ProductModel {
   @prop({ required: true })
   description: string;
 
-  @prop()
-  imageId: string;
+  image: object;
+
+  @prop({ type: Date, default: Date.now })
+  addedDate:string;
 }

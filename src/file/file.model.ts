@@ -1,6 +1,6 @@
 import { prop } from '@typegoose/typegoose';
 import { Readable } from 'stream';
-import { Express } from 'Express';
+import { Express } from 'express';
 
 export class FileModel implements Express.Multer.File {
   @prop({ required: true })
@@ -18,7 +18,7 @@ export class FileModel implements Express.Multer.File {
   @prop({ required: true })
   public size: number;
 
-  @prop({ required: true })
+  @prop()
   public stream: Readable;
 
   @prop({ required: true })
@@ -30,12 +30,12 @@ export class FileModel implements Express.Multer.File {
   @prop({ required: true })
   public path: string;
 
-  @prop({ required: true })
+  @prop()
   public buffer: Buffer;
 
-  @prop({ default: Date.now })
-  public createdAt: Date;
+  // @prop({ default: Date.now })
+  // public createdAt: Date;
 
-  @prop({ default: Date.now })
-  public updatedAt: Date;
+  // @prop({ default: Date.now })
+  // public updatedAt: Date;
 }

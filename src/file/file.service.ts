@@ -15,15 +15,22 @@ export class FileService {
     return newFile.save();
   }
 
-  getFileById(id) {
+  getFileById(id: string) {
     return this.fileModel.findById(id);
   }
 
-  getFileList() {}
+  getFileList() {
+    return this.fileModel.find();
+  }
 
-  deleteFileById() {
+  deleteFileById(id:string) {
     // check if file used in products
     // delete file from mongodb
     // delete file from upload dir
+    const deletedFile =  this.fileModel.findByIdAndDelete(id)
+    if (!deletedFile) {
+      throw new Error('File not found');
+    }
+    return deletedFile;
   }
 }

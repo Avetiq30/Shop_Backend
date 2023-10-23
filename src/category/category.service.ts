@@ -31,6 +31,6 @@ export class CategoryService {
   }
 
   async deleteCategory(id: string): Promise<void> {
-    await this.categoryModel.findByIdAndDelete({ id }).exec();
+    await this.categoryModel.findByIdAndDelete({ _id: id }).exec();
   }
 }

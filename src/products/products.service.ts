@@ -27,9 +27,29 @@ export class ProductsService {
     return newProduct.save();
   }
 
-  async getAllProduct(): Promise<ProductModel[] | null> {
-    return this.productModel.find().exec();
+  async getAllProduct(
+    minPrice: number,
+    maxPrice: number,
+    category: string,
+    // addedDate: string,
+  ): Promise<ProductModel[]> {
+    const filter: any = {};
+  
+    if (minPrice !== undefined && maxPrice !== undefined) {
+      filter.price = { $gte: minPrice, $lte: maxPrice };
+    }
+  
+    if (category) {
+      filter.category = category;
+    }
+  
+    // if (addedDate) {
+    //   filter.addedDate = addedDate;
+    // }
+  
+    return this.productModel.find(filter).exec();
   }
+  
   async getProductById(id: string): Promise<ProductModel | null> {
     return this.productModel.findById(id).exec();
   }
@@ -38,6 +58,7 @@ export class ProductsService {
     id: string,
     updateProductDto: Partial<ProductUpdateDto>,
   ): Promise<ProductModel> {
+   
     const updatedProduct = await this.productModel
       .findOneAndUpdate({ _id: id }, updateProductDto, { new: true })
       .exec();
