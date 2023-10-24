@@ -1,4 +1,4 @@
-import { ProductCreateDto } from './product-create.dto';
+import { ProductCreateDto } from './create.dto';
 import { IsString } from 'class-validator';
 
 export class ProductUpdateDto extends ProductCreateDto {

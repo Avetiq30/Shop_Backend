@@ -1,5 +1,5 @@
 import { ArrayNotEmpty, IsArray, IsNotEmpty } from 'class-validator';
-import { ProductCreateDto } from '../../products/dto/product-create.dto';
+import { ProductCreateDto } from '../../products/dto/create.dto';
 
 export class OrderDto {
   @IsNotEmpty()

@@ -11,9 +11,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductModel } from './product.model/product.model';
-import { ProductCreateDto } from './dto/product-create.dto';
-import { ProductUpdateDto } from './dto/product-update.dto';
+import { ProductModel } from './model/model';
+import { ProductCreateDto } from './dto/create.dto';
+import { ProductUpdateDto } from './dto/update.dto';
+import { NOT_PRODUCT_BY_ID } from '../products/prdouct-constants';
+import { ProductFilterDto } from './dto/query.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -26,26 +28,17 @@ export class ProductsController {
     return this.productService.createProduct(createProductDto);
   }
   @Get()
-  async getAllProduct(
-    @Query('minPrice') minPrice: number,
-    @Query('maxPrice') maxPrice: number,
-    @Query('category') category: string,
-    // @Query('addedDate') addedDate: string,
-  ): Promise<ProductModel[]> {
-    return await this.productService.getAllProduct(
-      minPrice,
-      maxPrice,
-      category,
-    );
+  async getAllProduct(@Query()productFilterDto:ProductFilterDto): Promise<ProductModel[]> {
+    return await this.productService.getAllProduct( productFilterDto);
   }
 
   @Get(':id')
   async getProductById(@Param('id') id: string): Promise<ProductModel> {
     try {
       return await this.productService.getProductById(id);
-    } catch (e) {
+    } catch  {
       throw new HttpException(
-        'Could not found product by id',
+        NOT_PRODUCT_BY_ID,
         HttpStatus.NOT_FOUND,
       );
     }

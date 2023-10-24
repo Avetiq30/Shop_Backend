@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductModel } from './product.model/product.model';
+import { ProductModel } from './model/model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
-import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './constants';
+import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from '../products/prdouct-constants';
 import { getModelForClass } from '@typegoose/typegoose';
-import { ProductCreateDto } from './dto/product-create.dto';
-import { ProductUpdateDto } from './dto/product-update.dto';
+import { ProductCreateDto } from './dto/create.dto';
+import { ProductUpdateDto } from './dto/update.dto';
+import { ProductFilterDto } from './dto/query.dto';
 
 @Injectable()
 export class ProductsService {
@@ -27,28 +28,26 @@ export class ProductsService {
     return newProduct.save();
   }
 
-  async getAllProduct(
-    minPrice: number,
-    maxPrice: number,
-    category: string,
-    // addedDate: string,
-  ): Promise<ProductModel[]> {
-    const filter: any = {};
+  async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
+    const { minPrice, maxPrice, category } = productFilterDto;
+    const filter: any = {}; 
 
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      filter.price = { $gte: minPrice, $lte: maxPrice };
+    if (minPrice !== undefined) {
+      filter.price = { $gte: minPrice };
     }
-
+    if (maxPrice !== undefined) {
+      if (filter.price) {
+        filter.price.$lte = maxPrice;
+      } else {
+        filter.price = { $lte: maxPrice };
+      }
+    }
     if (category) {
       filter.category = category;
     }
-
-    // if (addedDate) {
-    //   filter.addedDate = addedDate;
-    // }
-
+    
     return this.productModel.find(filter).exec();
-  }
+}
 
   async getProductById(id: string): Promise<ProductModel | null> {
     return this.productModel.findById(id).exec();
