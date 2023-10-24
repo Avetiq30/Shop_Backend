@@ -23,7 +23,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'JWT_SECRET',
+      secret:  'JWT_SECRET',
       resave: false,
       saveUninitialized: false,
     }),
@@ -31,7 +31,7 @@ async function bootstrap() {
 
   // app.enableCors();
   await app.listen(PORT, () => {
-    console.log('server running on port ', PORT);
+    console.info('server running on port ', PORT);
   });
 }
 bootstrap();
