@@ -17,7 +17,5 @@ export class ProductModel {
   image: object;
 
   @prop({ type: Date, default: Date.now })
-  addedDate:string;
+  addedDate: string;
 }
-
-
