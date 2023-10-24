@@ -27,11 +27,11 @@ export class CategoryController {
     return await this.categoryService.getAllCategories();
   }
 
-  @Get(':id')
-  async getCategoryById(
-    @Param('id') id: string,
+  @Get(':name')
+  async getCategoryByName(
+    @Param('name') name: string,
   ): Promise<CategoryModel | null> {
-    return await this.categoryService.getCategoryById(id);
+    return await this.categoryService.getCategoryByName(name);
   }
 
   @Put(':id')

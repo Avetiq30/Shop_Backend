@@ -1,4 +1,4 @@
-import { UserModel } from 'src/user/user.model';
+import { UserModel } from '../../src/user/user.model';
 
 export const loginData = {
   email: 'test@mail.ru',

@@ -1,4 +1,4 @@
-import { CreateProductDto } from 'src/products/dto/product.dto';
+import { CreateProductDto } from '../../src/products/dto/product.dto';
 
 export const createProductDto: CreateProductDto = {
   name: 'testProduct',

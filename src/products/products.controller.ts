@@ -8,10 +8,12 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductModel } from './product.model/product.model';
+import { ProductCreateDto } from './dto/product-create.dto';
+import { ProductUpdateDto } from './dto/product-update.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -19,14 +21,24 @@ export class ProductsController {
 
   @Post()
   async createProduct(
-    @Body() createProductDto: CreateProductDto,
+    @Body() createProductDto: ProductCreateDto,
   ): Promise<ProductModel> {
-    return await this.productService.createProduct(createProductDto);
+    return this.productService.createProduct(createProductDto);
   }
   @Get()
-  async getAllProduct(): Promise<ProductModel[]> {
-    return await this.productService.getAllProduct();
+  async getAllProduct(
+    @Query('minPrice') minPrice: number,
+    @Query('maxPrice') maxPrice: number,
+    @Query('category') category: string,
+    // @Query('addedDate') addedDate: string,
+  ): Promise<ProductModel[]> {
+    return await this.productService.getAllProduct(
+      minPrice,
+      maxPrice,
+      category,
+    );
   }
+
   @Get(':id')
   async getProductById(@Param('id') id: string): Promise<ProductModel> {
     try {
@@ -38,13 +50,15 @@ export class ProductsController {
       );
     }
   }
+
   @Put(':id')
   async updateProduct(
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
-  ): Promise<any> {
-    return await this.productService.updateProduct(id, updateProductDto);
+    @Body() updateProductDto: Partial<ProductUpdateDto>,
+  ) {
+    return this.productService.updateProduct(id, updateProductDto);
   }
+
   @Delete(':id')
   async deleteProduct(@Param('id') id: string): Promise<void> {
     return await this.productService.deleteProduct(id);

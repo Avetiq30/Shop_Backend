@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UserService } from '../src/user/user.service';
-import { loginData, user } from './authHelper';
+import { loginData, user } from './helpers/authHelper';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -38,6 +38,7 @@ describe('AuthController (e2e)', () => {
       expect(response.body.token).toBeDefined();
     });
   });
+
   describe('When trying login in and token is not generated', () => {
     it('should be error', async () => {
       await userService.createUser(user);

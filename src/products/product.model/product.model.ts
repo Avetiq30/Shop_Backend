@@ -12,4 +12,10 @@ export class ProductModel {
 
   @prop({ required: true })
   description: string;
+
+  @prop()
+  image: object;
+
+  @prop({ type: Date, default: Date.now })
+  addedDate: string;
 }
