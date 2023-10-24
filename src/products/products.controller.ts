@@ -28,19 +28,18 @@ export class ProductsController {
     return this.productService.createProduct(createProductDto);
   }
   @Get()
-  async getAllProduct(@Query()productFilterDto:ProductFilterDto): Promise<ProductModel[]> {
-    return await this.productService.getAllProduct( productFilterDto);
+  async getAllProduct(
+    @Query() productFilterDto: ProductFilterDto,
+  ): Promise<ProductModel[]> {
+    return await this.productService.getAllProduct(productFilterDto);
   }
 
   @Get(':id')
   async getProductById(@Param('id') id: string): Promise<ProductModel> {
     try {
       return await this.productService.getProductById(id);
-    } catch  {
-      throw new HttpException(
-        NOT_PRODUCT_BY_ID,
-        HttpStatus.NOT_FOUND,
-      );
+    } catch {
+      throw new HttpException(NOT_PRODUCT_BY_ID, HttpStatus.NOT_FOUND);
     }
   }
 

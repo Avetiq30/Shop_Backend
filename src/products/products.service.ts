@@ -3,7 +3,10 @@ import { ProductModel } from './model/model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
-import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from '../products/prdouct-constants';
+import {
+  NOT_FOUND_CATEGORY,
+  PRODUCT_NOT_FOUND,
+} from '../products/prdouct-constants';
 import { getModelForClass } from '@typegoose/typegoose';
 import { ProductCreateDto } from './dto/create.dto';
 import { ProductUpdateDto } from './dto/update.dto';
@@ -30,7 +33,7 @@ export class ProductsService {
 
   async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
     const { minPrice, maxPrice, category } = productFilterDto;
-    const filter: any = {}; 
+    const filter: any = {};
 
     if (minPrice !== undefined) {
       filter.price = { $gte: minPrice };
@@ -45,9 +48,9 @@ export class ProductsService {
     if (category) {
       filter.category = category;
     }
-    
+
     return this.productModel.find(filter).exec();
-}
+  }
 
   async getProductById(id: string): Promise<ProductModel | null> {
     return this.productModel.findById(id).exec();
