@@ -1,15 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductModel } from './product.model/product.model';
+import { ProductModel } from './model/product.model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
-import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './constants';
+import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './prdouct.constants';
 import { getModelForClass } from '@typegoose/typegoose';
 import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
   constructor(
     @InjectModel(ProductModel)
     private readonly productModel: ReturnModelType<typeof ProductModel>,
@@ -27,26 +28,20 @@ export class ProductsService {
     return newProduct.save();
   }
 
-  async getAllProduct(
-    minPrice: number,
-    maxPrice: number,
-    category: string,
-    // addedDate: string,
-  ): Promise<ProductModel[]> {
+  async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
+    const { minPrice, maxPrice, categoryId } = productFilterDto;
     const filter: any = {};
 
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      filter.price = { $gte: minPrice, $lte: maxPrice };
+    if (minPrice) {
+      filter.price = { $gte: minPrice };
+    }
+    if (maxPrice) {
+      filter.price = { ...filter.price, $lte: maxPrice };
     }
 
-    if (category) {
-      filter.category = category;
+    if (categoryId) {
+      filter.category = categoryId;
     }
-
-    // if (addedDate) {
-    //   filter.addedDate = addedDate;
-    // }
-
     return this.productModel.find(filter).exec();
   }
 
@@ -65,7 +60,6 @@ export class ProductsService {
     if (!updatedProduct) {
       throw new NotFoundException(PRODUCT_NOT_FOUND);
     }
-
     return updatedProduct;
   }
 
