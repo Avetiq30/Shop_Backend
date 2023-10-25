@@ -1,5 +1,5 @@
 import { Ref, prop } from '@typegoose/typegoose';
-import { CategoryModel } from '../../category/category.model';
+import { CategoryModel } from '../../category/model/category.model';
 export class ProductModel {
   @prop({ required: true })
   name: string;

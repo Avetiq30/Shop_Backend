@@ -8,14 +8,14 @@ import {
   Body,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryModel } from './category.model';
-import { CreateCategoryDto } from './categoryDto';
+import { CategoryModel } from './model/category.model';
+import { CreateCategoryDto } from './dto/category-create.dto';
 
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post('create')
+  @Post('')
   async createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryModel> {
@@ -27,9 +27,9 @@ export class CategoryController {
     return await this.categoryService.getAllCategories();
   }
 
-  @Get(':name')
+  @Get(':id')
   async getCategoryByName(
-    @Param('name') name: string,
+    @Param('id') name: string,
   ): Promise<CategoryModel | null> {
     return await this.categoryService.getCategoryByName(name);
   }

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CategoryModel } from './category.model';
+import { CategoryModel } from './model/category.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { CreateCategoryDto } from './categoryDto';
+import { CreateCategoryDto } from './dto/category-create.dto';
 
 @Injectable()
 export class CategoryService {

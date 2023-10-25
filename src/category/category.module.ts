@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CategoryModel } from './category.model';
+import { CategoryModel } from './model/category.model';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
