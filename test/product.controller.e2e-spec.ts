@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { ProductsService } from '../src/product/products.service';
+import { ProductsService } from '../src/product/product.service';
 import { UpdateProductDto } from '../src/product/dto/product.dto';
 import { createProductDto } from './helpers/productHelper';
 

@@ -10,16 +10,16 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { ProductModel } from './model/product-model';
+import { ProductService } from './product.service';
+import { ProductModel } from './model/product.model';
 import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
-import { NOT_FOUN_PRODUCT_BY_ID } from './prdouct-constants';
+import { NOT_FOUND_PRODUCT_BY_ID } from './prdouct.constants';
 import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Controller('products')
-export class ProductsController {
-  constructor(private readonly productService: ProductsService) {}
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
 
   @Post()
   async createProduct(
@@ -40,7 +40,7 @@ export class ProductsController {
       return await this.productService.getProductById(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(NOT_FOUN_PRODUCT_BY_ID, HttpStatus.NOT_FOUND);
+      throw new HttpException(NOT_FOUND_PRODUCT_BY_ID, HttpStatus.NOT_FOUND);
     }
   }
 

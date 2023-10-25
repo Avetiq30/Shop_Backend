@@ -15,5 +15,5 @@ export class ProductFilterDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  category: string;
+  categoryId: string;
 }

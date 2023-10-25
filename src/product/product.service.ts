@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductModel } from './model/product-model';
+import { ProductModel } from './model/product.model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
-import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './prdouct-constants';
+import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './prdouct.constants';
 import { getModelForClass } from '@typegoose/typegoose';
 import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
 import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
   constructor(
     @InjectModel(ProductModel)
     private readonly productModel: ReturnModelType<typeof ProductModel>,
@@ -29,7 +29,7 @@ export class ProductsService {
   }
 
   async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
-    const { minPrice, maxPrice, category } = productFilterDto;
+    const { minPrice, maxPrice, categoryId } = productFilterDto;
     const filter: any = {};
 
     if (minPrice) {
@@ -39,10 +39,9 @@ export class ProductsService {
       filter.price = { ...filter.price, $lte: maxPrice };
     }
 
-    if (category) {
-      filter.category = category;
+    if (categoryId) {
+      filter.category = categoryId;
     }
-
     return this.productModel.find(filter).exec();
   }
 

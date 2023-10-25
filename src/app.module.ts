@@ -2,7 +2,7 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { CartModule } from './cart/cart.module';
 import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
-import { ProductsModule } from './product/products.module';
+import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypegooseModule } from 'nestjs-typegoose';
@@ -23,7 +23,7 @@ import { APP_PIPE } from '@nestjs/core';
     CartModule,
     CategoryModule,
     OrderModule,
-    ProductsModule,
+    ProductModule,
     UserModule,
     FileModule,
   ],
