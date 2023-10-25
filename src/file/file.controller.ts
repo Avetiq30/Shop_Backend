@@ -11,6 +11,7 @@ import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../configs/multer.config';
 import { FileModel } from './file.model';
+import { FILE_NOT_FOUND } from './file.constants';
 
 @Controller('file')
 export class FileController {
@@ -26,7 +27,7 @@ export class FileController {
   getFileById(@Param('id') id: string) {
     const file = this.fileService.getFileById(id);
     if (!file) {
-      throw new Error('File not found');
+      throw new Error(FILE_NOT_FOUND);
     }
     return file;
   }

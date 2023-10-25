@@ -32,10 +32,4 @@ export class FileModel implements Express.Multer.File {
 
   @prop()
   public buffer: Buffer;
-
-  // @prop({ default: Date.now })
-  // public createdAt: Date;
-
-  // @prop({ default: Date.now })
-  // public updatedAt: Date;
 }
