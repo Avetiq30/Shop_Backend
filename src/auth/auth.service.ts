@@ -7,6 +7,7 @@ import {
   USER_NOT_FOUND,
   USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
 } from './auth.constants';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,13 +19,13 @@ export class AuthService {
   async generateAccessToken(payload: any): Promise<string> {
     return this.jwtService.sign(payload);
   }
-  async login(email: string, password: string): Promise<string | null> {
-    const user = await this.userService.findUserByEmail(email);
+  async login(loginDto: LoginDto): Promise<string | null> {
+    const user = await this.userService.findUserByEmail(loginDto.email);
     if (!user) {
       throw new HttpException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     const isValidPassword = await this.bcryptService.comparePassword(
-      password,
+      loginDto.password,
       user.password,
     );
     if (!isValidPassword) {
@@ -33,11 +34,11 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    return this.generateAccessToken({ email });
+    return this.generateAccessToken(loginDto.email);
   }
-  async logout(req: any): Promise<{ message: string }> {
-    if (req.session) {
-      req.session.destroy();
+  async logout(session): Promise<{ message: string }> {
+    if (session) {
+      session.destroy();
     }
     return { message: LOGGED_OUT_SUCESSFULLY };
   }
