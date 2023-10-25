@@ -8,6 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { COULD_NOT_GENERATE_TOKEN } from './auth.constants';
 
 @Controller('auth')
 export class AuthController {
@@ -22,10 +23,7 @@ export class AuthController {
     );
 
     if (!token) {
-      throw new HttpException(
-        'Could not generate access token',
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException(COULD_NOT_GENERATE_TOKEN, HttpStatus.FORBIDDEN);
     }
     return { token };
   }
