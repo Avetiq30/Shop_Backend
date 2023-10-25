@@ -1,16 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductModel } from './model/model';
+import { ProductModel } from './model/product-model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { CategoryService } from '../category/category.service';
-import {
-  NOT_FOUND_CATEGORY,
-  PRODUCT_NOT_FOUND,
-} from '../products/prdouct-constants';
+import { NOT_FOUND_CATEGORY, PRODUCT_NOT_FOUND } from './prdouct-constants';
 import { getModelForClass } from '@typegoose/typegoose';
-import { ProductCreateDto } from './dto/create.dto';
-import { ProductUpdateDto } from './dto/update.dto';
-import { ProductFilterDto } from './dto/query.dto';
+import { ProductCreateDto } from './dto/product-create.dto';
+import { ProductUpdateDto } from './dto/product-update.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Injectable()
 export class ProductsService {
@@ -35,16 +32,13 @@ export class ProductsService {
     const { minPrice, maxPrice, category } = productFilterDto;
     const filter: any = {};
 
-    if (minPrice !== undefined) {
+    if (minPrice) {
       filter.price = { $gte: minPrice };
     }
-    if (maxPrice !== undefined) {
-      if (filter.price) {
-        filter.price.$lte = maxPrice;
-      } else {
-        filter.price = { $lte: maxPrice };
-      }
+    if (maxPrice) {
+      filter.price = { ...filter.price, $lte: maxPrice };
     }
+
     if (category) {
       filter.category = category;
     }
@@ -67,7 +61,6 @@ export class ProductsService {
     if (!updatedProduct) {
       throw new NotFoundException(PRODUCT_NOT_FOUND);
     }
-
     return updatedProduct;
   }
 

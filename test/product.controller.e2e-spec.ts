@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { ProductsService } from '../src/products/products.service';
-import { UpdateProductDto } from '../src/products/dto/product.dto';
+import { ProductsService } from '../src/product/products.service';
+import { UpdateProductDto } from '../src/product/dto/product.dto';
 import { createProductDto } from './helpers/productHelper';
 
 describe('ProductsController', () => {

@@ -11,8 +11,6 @@ export class AuthService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  private activeTokens: string[] = [];
-
   async generateAccessToken(payload: any): Promise<string> {
     return this.jwtService.sign(payload);
   }

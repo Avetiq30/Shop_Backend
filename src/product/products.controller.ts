@@ -11,11 +11,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductModel } from './model/model';
-import { ProductCreateDto } from './dto/create.dto';
-import { ProductUpdateDto } from './dto/update.dto';
-import { NOT_PRODUCT_BY_ID } from '../products/prdouct-constants';
-import { ProductFilterDto } from './dto/query.dto';
+import { ProductModel } from './model/product-model';
+import { ProductCreateDto } from './dto/product-create.dto';
+import { ProductUpdateDto } from './dto/product-update.dto';
+import { NOT_FOUN_PRODUCT_BY_ID } from './prdouct-constants';
+import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -38,8 +38,9 @@ export class ProductsController {
   async getProductById(@Param('id') id: string): Promise<ProductModel> {
     try {
       return await this.productService.getProductById(id);
-    } catch {
-      throw new HttpException(NOT_PRODUCT_BY_ID, HttpStatus.NOT_FOUND);
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(NOT_FOUN_PRODUCT_BY_ID, HttpStatus.NOT_FOUND);
     }
   }
 
