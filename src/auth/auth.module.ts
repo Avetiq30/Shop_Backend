@@ -23,6 +23,5 @@ import { BcryptService } from './bcrypt.service';
   ],
   providers: [AuthService, JwtStrategy, BcryptService],
   controllers: [AuthController],
-  //   exports: [JwtModule],
 })
 export class AuthModule {}
