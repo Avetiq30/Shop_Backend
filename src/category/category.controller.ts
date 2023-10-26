@@ -15,7 +15,7 @@ import { CreateCategoryDto } from './dto/category-create.dto';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post('')
+  @Post()
   async createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryModel> {

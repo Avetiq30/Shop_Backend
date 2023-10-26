@@ -20,7 +20,6 @@ export class AuthController {
       loginData.email,
       loginData.password,
     );
-
     if (!token) {
       throw new HttpException(
         'Could not generate access token',
