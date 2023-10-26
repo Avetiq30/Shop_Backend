@@ -28,22 +28,20 @@ export class CategoryController {
   }
 
   @Get(':id')
-  async getCategoryByName(
-    @Param('id') name: string,
-  ): Promise<CategoryModel | null> {
-    return await this.categoryService.getCategoryByName(name);
+  async getCategoryByid(@Param('id') id: string): Promise<CategoryModel> {
+    return await this.categoryService.getCategoryByid(id);
   }
 
   @Put(':id')
-  async updateCategory(
+  async updateCategoryById(
     @Param('id') id: string,
     @Body('name') name: string,
   ): Promise<CategoryModel | null> {
-    return await this.categoryService.updateCategory(id, name);
+    return await this.categoryService.updateCategoryById(id, name);
   }
 
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string): Promise<void> {
-    await this.categoryService.deleteCategory(id);
+  async deleteCategoryById(@Param('id') id: string): Promise<void> {
+    await this.categoryService.deleteCategoryById(id);
   }
 }

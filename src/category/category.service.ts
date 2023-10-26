@@ -19,18 +19,18 @@ export class CategoryService {
   async getAllCategories(): Promise<any[]> {
     return this.categoryModel.find().exec();
   }
-  async getCategoryByName(name: string): Promise<CategoryModel | null> {
-    return this.categoryModel.findOne({ name }).exec();
+  async getCategoryByid(id: string): Promise<CategoryModel | null> {
+    return this.categoryModel.findById(id).exec();
   }
 
-  async updateCategory(
+  async updateCategoryById(
     id: string,
     name: string,
   ): Promise<CategoryModel | null> {
     return this.categoryModel.findByIdAndUpdate({ id, name }).exec();
   }
 
-  async deleteCategory(id: string): Promise<void> {
+  async deleteCategoryById(id: string): Promise<void> {
     await this.categoryModel.findByIdAndDelete({ _id: id }).exec();
   }
 }

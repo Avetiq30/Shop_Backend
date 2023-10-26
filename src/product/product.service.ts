@@ -18,9 +18,11 @@ export class ProductService {
   ) {}
 
   async createProduct(createProductDto: ProductCreateDto): Promise<any> {
-    const category = await this.categoryService.getCategoryByName(
+    const category = await this.categoryService.getCategoryByid(
       createProductDto.category,
     );
+    console.log(category);
+
     if (!category) {
       throw new NotFoundException(NOT_FOUND_CATEGORY);
     }
