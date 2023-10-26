@@ -24,8 +24,8 @@ export class FileController {
   }
 
   @Get(':id')
-  getFileById(@Param('id') id: string) {
-    const file = this.fileService.getFileById(id);
+  async getFileById(@Param('id') id: string) {
+    const file = await this.fileService.getFileById(id);
     if (!file) {
       throw new Error(FILE_NOT_FOUND);
     }
@@ -38,8 +38,8 @@ export class FileController {
   }
 
   @Delete(':id')
-  deleteFileById(@Param('id') id: string) {
-    const deletedFile = this.fileService.deleteFileById(id);
+  async deleteFileById(@Param('id') id: string) {
+    const deletedFile = await this.fileService.deleteFileById(id);
     return deletedFile;
   }
 }

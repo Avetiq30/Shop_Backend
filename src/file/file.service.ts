@@ -11,21 +11,21 @@ export class FileService {
     private readonly fileModel: ReturnModelType<typeof FileModel>,
   ) {}
 
-  uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File) {
     const newFile = new this.fileModel(file);
     return newFile.save();
   }
 
-  getFileById(id: string) {
-    return this.fileModel.findById(id);
+  async getFileById(id: string) {
+    return await this.fileModel.findById(id);
   }
 
-  getFileList() {
-    return this.fileModel.find();
+  async getFileList() {
+    return await this.fileModel.find();
   }
 
-  deleteFileById(id: string) {
-    const deletedFile = this.fileModel.findByIdAndDelete(id);
+  async deleteFileById(id: string) {
+    const deletedFile = await this.fileModel.findByIdAndDelete(id);
     if (!deletedFile) {
       throw new Error(FILE_NOT_FOUND);
     }
