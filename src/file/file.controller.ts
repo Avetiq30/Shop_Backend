@@ -11,6 +11,7 @@ import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../configs/multer.config';
 import { FileModel } from './file.model';
+import { FILE_NOT_FOUND } from './file.constants';
 
 @Controller('file')
 export class FileController {
@@ -23,10 +24,10 @@ export class FileController {
   }
 
   @Get(':id')
-  getFileById(@Param('id') id: string) {
-    const file = this.fileService.getFileById(id);
+  async getFileById(@Param('id') id: string) {
+    const file = await this.fileService.getFileById(id);
     if (!file) {
-      throw new Error('File not found');
+      throw new Error(FILE_NOT_FOUND);
     }
     return file;
   }
@@ -37,8 +38,8 @@ export class FileController {
   }
 
   @Delete(':id')
-  deleteFileById(@Param('id') id: string) {
-    const deletedFile = this.fileService.deleteFileById(id);
+  async deleteFileById(@Param('id') id: string) {
+    const deletedFile = await this.fileService.deleteFileById(id);
     return deletedFile;
   }
 }
