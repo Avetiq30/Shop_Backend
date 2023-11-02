@@ -17,6 +17,9 @@ describe('UserController', () => {
     await userService.deleteAll();
     await app.close();
   });
+  beforeEach(async () => {
+    await userService.deleteAll();
+  });
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -59,6 +62,8 @@ describe('UserController', () => {
       const loginData = {
         email: 'testing@mail.ru',
         password: 'test123',
+        name: 'name',
+        lastname: 'lastname',
       };
 
       const response = await request(app.getHttpServer())
