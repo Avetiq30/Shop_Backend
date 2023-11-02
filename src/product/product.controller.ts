@@ -17,7 +17,7 @@ import { ProductUpdateDto } from './dto/product-update.dto';
 import { NOT_FOUND_PRODUCT_BY_ID } from './prdouct.constants';
 import { ProductFilterDto } from './dto/product-filter.dto';
 
-@Controller('products')
+@Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

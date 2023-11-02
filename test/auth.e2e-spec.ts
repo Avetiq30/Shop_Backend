@@ -31,8 +31,7 @@ describe('AuthController (e2e)', () => {
 
   describe('When trying login in', () => {
     it('should be success', async () => {
-      const createUser = await userService.createUser(user);
-      console.log('user---', createUser);
+      await userService.createUser(user);
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(loginData)

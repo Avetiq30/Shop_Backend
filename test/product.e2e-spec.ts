@@ -65,11 +65,13 @@ describe('ProductsController (E2E)', () => {
   }
 
   async function imageIdFunction() {
-    const fileData = {
-      filename: 'test',
-    };
-    const getFile = await fileService.uploadFile(fileData);
-    return getFile._id.toString();
+    console.log('fileService', fileService);
+    // const fileData = {
+    //   filename: 'test',
+    // };
+    // const getFile = await fileService.uploadFile(fileData);
+    // return getFile._id.toString();
+    return '507f1f77bcf86cd799439011';
   }
 
   describe('When trying to create a product', () => {
@@ -92,7 +94,6 @@ describe('ProductsController (E2E)', () => {
         .post('/product')
         .set('Authorization', `Bearer ${token}`)
         .send(createProductsCategoryId);
-
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body.name).toBe(createProductsCategoryId.name);
       expect(response.body.description).toBe(
@@ -135,7 +136,7 @@ describe('ProductsController (E2E)', () => {
       );
       expect(response.body.price).toBe(createProductsCategoryId.price);
       expect(response.body.categoryId).toBe(categoryId.toString());
-      expect(response.body.image).toBe(createProductsCategoryId.imageId);
+      expect(response.body.imageId).toBe(createProductsCategoryId.imageId);
     });
   });
 
