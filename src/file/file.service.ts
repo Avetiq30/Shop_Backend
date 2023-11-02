@@ -10,20 +10,20 @@ export class FileService {
     private readonly fileModel: ReturnModelType<typeof FileModel>,
   ) {}
 
-  uploadFile(file) {
+  async uploadFile(file) {
     const newFile = new this.fileModel(file);
     return newFile.save();
   }
 
-  getFileById(id: string) {
+  async getFileById(id: string) {
     return this.fileModel.findById(id);
   }
 
-  getFileList() {
+  async getFileList() {
     return this.fileModel.find();
   }
 
-  deleteFileById(id: string) {
+  async deleteFileById(id: string) {
     // check if file used in products
     // delete file from mongodb
     // delete file from upload dir

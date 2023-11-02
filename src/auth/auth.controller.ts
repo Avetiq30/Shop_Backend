@@ -10,6 +10,9 @@ import {
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
 
+interface CustomRequest extends Request {
+  session: any;
+}
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -27,7 +30,8 @@ export class AuthController {
     return { token };
   }
   @Post('logout')
-  async logout(@Req() req: any): Promise<any> {
-    return this.authService.logout(req);
+  async logout(@Req() req: CustomRequest) {
+    const session = req.session;
+    return this.authService.logout(session);
   }
 }

@@ -37,9 +37,9 @@ export class AuthService {
 
     return this.generateAccessToken({ email });
   }
-  async logout(req: any): Promise<any> {
-    if (req.session) {
-      req.session.destroy();
+  async logout(session): Promise<{ message: string }> {
+    if (session) {
+      session.destroy();
     }
     return { message: 'Logged out successfully' };
   }
