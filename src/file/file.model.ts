@@ -1,8 +1,6 @@
 import { prop } from '@typegoose/typegoose';
-import { Readable } from 'stream';
-import { Express } from 'express';
 
-export class FileModel implements Express.Multer.File {
+export class FileModel {
   @prop({ required: true })
   public fieldname: string;
 
@@ -17,9 +15,6 @@ export class FileModel implements Express.Multer.File {
 
   @prop({ required: true })
   public size: number;
-
-  @prop()
-  public stream: Readable;
 
   @prop({ required: true })
   public destination: string;

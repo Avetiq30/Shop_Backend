@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptService } from './bcrypt.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
+import { USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT } from './auth.constants';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
 
     if (!isValidPassword) {
       throw new HttpException(
-        'User password or email is not correct ',
+        USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
         HttpStatus.FORBIDDEN,
       );
     }

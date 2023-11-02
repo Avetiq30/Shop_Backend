@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UserService } from '../src/user/user.service';
 import { loginData, user } from './helpers/authHelper';
+import { USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT } from '../src/auth/auth.constants';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -30,8 +31,8 @@ describe('AuthController (e2e)', () => {
 
   describe('When trying login in', () => {
     it('should be success', async () => {
-      await userService.createUser(user);
-
+      const createUser = await userService.createUser(user);
+      console.log('user---', createUser);
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(loginData)
@@ -51,7 +52,7 @@ describe('AuthController (e2e)', () => {
         .post('/auth/login')
         .send(loginDataInv)
         .expect(HttpStatus.FORBIDDEN);
-      expect(response.body.message).toBe('Could not generate access token');
+      expect(response.body.message).toBe(USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT);
     });
   });
 });
