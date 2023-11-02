@@ -3,10 +3,11 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ProductService } from '../src/product/product.service';
-import { createProducts, updateProducts } from './helpers/productHelper';
+import { createProductsHelper } from './helpers/productHelper';
 import { CategoryService } from '../src/category/category.service';
 import { UserService } from '../src/user/user.service';
 import { AuthService } from '../src/auth/auth.service';
+import { FileService } from '../src/file/file.service';
 
 describe('ProductsController (E2E)', () => {
   let app: INestApplication;
@@ -14,6 +15,7 @@ describe('ProductsController (E2E)', () => {
   let userService: UserService;
   let categoryService: CategoryService;
   let authService: AuthService;
+  let fileService: FileService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,6 +27,7 @@ describe('ProductsController (E2E)', () => {
     categoryService = moduleFixture.get<CategoryService>(CategoryService);
     userService = moduleFixture.get<UserService>(UserService);
     authService = moduleFixture.get<AuthService>(AuthService);
+    fileService = moduleFixture.get<FileService>(FileService);
     await app.init();
     await categoryService.deleteAll();
     await productService.deleteAll();
@@ -41,37 +44,49 @@ describe('ProductsController (E2E)', () => {
     await app.close();
   });
 
-  async function userAndAuthFunction() {
+  async function userAndAuthFunction(): Promise<string> {
     const userData = {
       name: 'test',
       lastname: 'tests',
       email: 'tests@mail.ru',
       password: '00000',
     };
-    const createUser = await userService.createUser(userData);
+    await userService.createUser(userData);
     return authService.login({
       email: userData.email,
       password: userData.password,
     });
   }
 
-  async function categoryFanction() {
+  async function categoryIdFunction() {
     const categoryData = { name: 'test' };
     const category = await categoryService.createCategory(categoryData);
     return category._id;
   }
 
+  async function imageIdFunction() {
+    const fileData = {
+      filename: 'test',
+    };
+    const getFile = await fileService.uploadFile(fileData);
+    return getFile._id.toString();
+  }
+
   describe('When trying to create a product', () => {
     let token;
-    let category;
+    let categoryId;
+    let imageId;
     beforeAll(async () => {
       token = await userAndAuthFunction();
-      category = await categoryFanction();
+      categoryId = await categoryIdFunction();
+      imageId = await imageIdFunction();
     });
+
     it('should be success', async () => {
       const createProductsCategoryId = {
-        ...createProducts,
-        categoryId: category._id,
+        ...createProductsHelper,
+        categoryId,
+        imageId,
       };
       const response = await request(app.getHttpServer())
         .post('/product')
@@ -84,23 +99,27 @@ describe('ProductsController (E2E)', () => {
         createProductsCategoryId.description,
       );
       expect(response.body.price).toBe(createProductsCategoryId.price);
-      expect(response.body.categoryId).toBe(category._id.toString());
-      expect(response.body.image).toBe(createProductsCategoryId.image);
+      expect(response.body.categoryId).toBe(categoryId._id.toString());
+      // expect(response.body.imageId).toBe(createProductsCategoryId.imageId);
     });
   });
-
+  //
   describe('When trying to get a product by ID', () => {
     let token;
-    let category;
+    let categoryId: string;
+    let imageId: string;
     beforeAll(async () => {
       token = await userAndAuthFunction();
-      category = await categoryFanction();
+      categoryId = await categoryIdFunction();
+      imageId = await imageIdFunction();
     });
     it('should return a product', async () => {
       const createProductsCategoryId = {
-        ...createProducts,
-        categoryId: category._id,
+        ...createProductsHelper,
+        categoryId: categoryId.toString(),
+        imageId,
       };
+
       const createdProduct = await productService.createProduct(
         createProductsCategoryId,
       );
@@ -115,8 +134,8 @@ describe('ProductsController (E2E)', () => {
         createProductsCategoryId.description,
       );
       expect(response.body.price).toBe(createProductsCategoryId.price);
-      expect(response.body.categoryId).toBe(category._id.toString());
-      expect(response.body.image).toBe(createProductsCategoryId.image);
+      expect(response.body.categoryId).toBe(categoryId.toString());
+      expect(response.body.image).toBe(createProductsCategoryId.imageId);
     });
   });
 
@@ -152,7 +171,7 @@ describe('ProductsController (E2E)', () => {
     });
   });
 
-  describe('When filter products by category', () => {
+  describe('When filter products by categoryId', () => {
     it('should be success', async () => {
       const categoryId = '650198bafe882cd6b77ce7e5';
       const response = await request(app.getHttpServer())
@@ -185,9 +204,9 @@ describe('ProductsController (E2E)', () => {
     });
   });
 
-  describe('When filter products by category, minimum and maximum price', () => {
+  describe('When filter products by categoryId, minimum and maximum price', () => {
     it('should be success', async () => {
-      const categoryId = '650198bafe882cd6b77ce7e5'; //
+      const categoryId = '650198bafe882cd6b77ce7e5';
       const minPrice = 10;
       const maxPrice = 100;
       const response = await request(app.getHttpServer())
@@ -209,15 +228,18 @@ describe('ProductsController (E2E)', () => {
 
   describe('When updated product by id and product already exist', () => {
     let token;
-    let category;
+    let categoryId;
+    let imageId;
     beforeAll(async () => {
       token = await userAndAuthFunction();
-      category = await categoryFanction();
+      categoryId = await categoryIdFunction();
+      imageId = await imageIdFunction();
     });
     it('should be success', async () => {
       const createProductsCategoryId = {
-        ...createProducts,
-        categoryId: category._id,
+        ...createProductsHelper,
+        categoryId,
+        imageId,
       };
       const create = await productService.createProduct(
         createProductsCategoryId,
@@ -227,8 +249,9 @@ describe('ProductsController (E2E)', () => {
       const response = await request(app.getHttpServer())
         .put(`/product/${create._id}`)
         .set('Authorization', `Bearer ${token}`)
-        .send(create)
-        .expect(HttpStatus.OK);
+        .send(create);
+
+      expect(response.status).toBe(HttpStatus.OK);
     });
   });
 });

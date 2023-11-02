@@ -12,6 +12,7 @@ describe('AuthController (e2e)', () => {
   beforeEach(async () => {
     await userService.deleteAll();
   });
+
   afterAll(async () => {
     await userService.deleteAll();
     await app.close();

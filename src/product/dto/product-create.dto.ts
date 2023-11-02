@@ -13,7 +13,7 @@ export class ProductCreateDto {
 
   @IsNotEmpty()
   @IsString()
-  category: string;
+  categoryId: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -24,9 +24,9 @@ export class ProductCreateDto {
   description: string;
 
   @IsNotEmpty()
-  image: object;
+  imageId: string;
 
   @IsDate()
   @IsOptional()
-  addedDate: string;
+  addedDate?: string;
 }

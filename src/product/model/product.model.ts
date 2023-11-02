@@ -5,7 +5,7 @@ export class ProductModel {
   name: string;
 
   @prop({ ref: () => CategoryModel, required: true })
-  category!: Ref<CategoryModel>;
+  categoryId!: Ref<CategoryModel>;
 
   @prop({ required: true, type: () => Number })
   price: number;
@@ -14,7 +14,7 @@ export class ProductModel {
   description: string;
 
   @prop()
-  image: object;
+  imageId: string;
 
   @prop({ type: Date, default: Date.now })
   addedDate: string;

@@ -33,7 +33,7 @@ describe('CategoryController (E2E)', () => {
       email: 'testcategory@mail.ru',
       password: '00000',
     };
-    const createUser = await userService.createUser(userData);
+    await userService.createUser(userData);
     return authService.login({
       email: userData.email,
       password: userData.password,
@@ -49,7 +49,7 @@ describe('CategoryController (E2E)', () => {
     await app.close();
   });
 
-  describe('When create a category', () => {
+  describe('When create a categoryId', () => {
     let token;
     beforeAll(async () => {
       token = await userAndAuthFunction();

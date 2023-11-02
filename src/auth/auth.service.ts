@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptService } from './bcrypt.service';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,9 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async login(email: string, password: string): Promise<string | null> {
+  async login(authLoginDto: AuthLoginDto): Promise<string | null> {
+    const { email, password } = authLoginDto;
+
     const user = await this.userService.findUserByEmail(email);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

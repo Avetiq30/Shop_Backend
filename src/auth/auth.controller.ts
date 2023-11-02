@@ -8,6 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,11 +16,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginData: { email: string; password: string }) {
-    const token = await this.authService.login(
-      loginData.email,
-      loginData.password,
-    );
+  async login(@Body() authLoginDto: AuthLoginDto) {
+    const token = await this.authService.login(authLoginDto);
     if (!token) {
       throw new HttpException(
         'Could not generate access token',

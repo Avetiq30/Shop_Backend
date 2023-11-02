@@ -10,7 +10,7 @@ export class FileService {
     private readonly fileModel: ReturnModelType<typeof FileModel>,
   ) {}
 
-  uploadFile(file: Express.Multer.File) {
+  uploadFile(file) {
     const newFile = new this.fileModel(file);
     return newFile.save();
   }

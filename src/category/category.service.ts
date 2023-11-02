@@ -19,7 +19,7 @@ export class CategoryService {
   async getAllCategories(): Promise<any[]> {
     return this.categoryModel.find().exec();
   }
-  async getCategoryByid(id: string): Promise<CategoryModel | null> {
+  async getCategoryById(id: string): Promise<CategoryModel | null> {
     return this.categoryModel.findById(id).exec();
   }
 
@@ -32,5 +32,9 @@ export class CategoryService {
 
   async deleteCategoryById(id: string): Promise<void> {
     await this.categoryModel.findByIdAndDelete({ _id: id }).exec();
+  }
+
+  async deleteAll() {
+    return this.categoryModel.deleteMany();
   }
 }
