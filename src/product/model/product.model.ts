@@ -1,5 +1,6 @@
 import { Ref, prop } from '@typegoose/typegoose';
 import { CategoryModel } from '../../category/model/category.model';
+import { FileModel } from '../../file/file.model';
 export class ProductModel {
   @prop({ required: true })
   name: string;
@@ -13,8 +14,8 @@ export class ProductModel {
   @prop({ required: true })
   description: string;
 
-  @prop()
-  imageId: string;
+  @prop({ ref: () => FileModel, required: true })
+  imageId: Ref<FileModel>;
 
   @prop({ type: Date, default: Date.now })
   addedDate: string;

@@ -65,26 +65,30 @@ describe('ProductsController (E2E)', () => {
   }
 
   async function imageIdFunction() {
-    console.log('fileService', fileService);
-    // const fileData = {
-    //   filename: 'test',
-    // };
-    // const getFile = await fileService.uploadFile(fileData);
-    // return getFile._id.toString();
-    return '507f1f77bcf86cd799439011';
+    const fileData = {
+      fieldname: 'file',
+      originalname: 'macbook.webp',
+      encoding: '7bit',
+      mimetype: 'image/webp',
+      size: 23034,
+      destination: './uploads/',
+      filename: '4a62dd4366.webp',
+      path: 'uploads/4a62dd4366.webp',
+    };
+    const getFile = await fileService.uploadFile(fileData);
+    return getFile._id.toString();
+    // return '507f1f77bcf86cd799439011';
   }
 
   describe('When trying to create a product', () => {
     let token;
     let categoryId;
     let imageId;
-    beforeAll(async () => {
+
+    it('should be success', async () => {
       token = await userAndAuthFunction();
       categoryId = await categoryIdFunction();
       imageId = await imageIdFunction();
-    });
-
-    it('should be success', async () => {
       const createProductsCategoryId = {
         ...createProductsHelper,
         categoryId,

@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import {
+  IsOptional,
+  IsNumber,
+  IsString,
+  IsNotEmpty,
+  IsInt,
+  IsPositive,
+} from 'class-validator';
 
 export class ProductFilterDto {
   @IsOptional()
@@ -16,4 +23,16 @@ export class ProductFilterDto {
   @IsString()
   @IsNotEmpty()
   categoryId: string;
+
+  @IsOptional()
+  @Transform(({ value }) => (value !== undefined ? parseInt(value) : undefined))
+  @IsPositive()
+  @IsInt()
+  page?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => (value !== undefined ? parseInt(value) : undefined))
+  @IsPositive()
+  @IsInt()
+  pageSize?: number;
 }

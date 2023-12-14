@@ -40,4 +40,22 @@ export class UserService {
     }
     return this.createUser(userData);
   }
+  async getUserById(id: string): Promise<UserModel | null> {
+    return this.userModel.findById(id).exec();
+  }
+
+  async getAllUser(): Promise<UserModel[]> {
+    return this.userModel.find().exec();
+  }
+
+  async deleteUserById(id: string): Promise<any> {
+    return this.userModel.findByIdAndDelete(id).exec();
+  }
+
+  async updateUserById(
+    id: string,
+    userData: CreateUserDto,
+  ): Promise<UserModel | null> {
+    return this.userModel.findByIdAndUpdate(id, userData, { new: true }).exec();
+  }
 }

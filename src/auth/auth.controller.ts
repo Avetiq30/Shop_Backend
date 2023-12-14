@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
+import { COULD_NOT_GENERATE_TOKEN } from './auth.constants';
 
 interface CustomRequest extends Request {
   session: any;
@@ -22,10 +23,7 @@ export class AuthController {
   async login(@Body() authLoginDto: AuthLoginDto) {
     const token = await this.authService.login(authLoginDto);
     if (!token) {
-      throw new HttpException(
-        'Could not generate access token',
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException(COULD_NOT_GENERATE_TOKEN, HttpStatus.FORBIDDEN);
     }
     return { token };
   }
