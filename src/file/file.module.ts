@@ -11,6 +11,7 @@ import { FileModel } from './file.model';
         typegooseClass: FileModel,
         schemaOptions: {
           collection: 'files',
+          timestamps: true,
         },
       },
     ]),

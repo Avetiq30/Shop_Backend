@@ -35,4 +35,8 @@ export class ProductFilterDto {
   @IsPositive()
   @IsInt()
   pageSize?: number;
+
+  @IsOptional()
+  @IsString()
+  searchText?: string;
 }

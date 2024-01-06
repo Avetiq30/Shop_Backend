@@ -5,6 +5,9 @@ import * as express from 'express';
 import { join } from 'path';
 import * as session from 'express-session';
 
+import { v4 as uuidv4 } from 'uuid';
+
+console.log(uuidv4());
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,

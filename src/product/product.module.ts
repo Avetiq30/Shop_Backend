@@ -13,6 +13,7 @@ import { CategoryModule } from '../category/category.module';
         typegooseClass: ProductModel,
         schemaOptions: {
           collection: 'products',
+          timestamps: true,
         },
       },
     ]),

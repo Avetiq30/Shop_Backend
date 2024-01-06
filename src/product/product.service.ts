@@ -9,6 +9,7 @@ import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
 import { ProductFilterDto } from './dto/product-filter.dto';
 import { FileModel } from '../file/file.model';
+import { CategoryModel } from '../category/model/category.model';
 
 @Injectable()
 export class ProductService {
@@ -20,38 +21,23 @@ export class ProductService {
 
   async createProduct(createProductDto: ProductCreateDto): Promise<any> {
     const category = await this.categoryService.getCategoryById(
-      createProductDto.categoryId,
+      createProductDto.category,
     );
-
     if (!category) {
       throw new NotFoundException(NOT_FOUND_CATEGORY);
     }
 
-    // createProductDto['_id'] = category['_id'];
     const newProduct = new this.productModel(createProductDto);
+    await newProduct.populate({
+      path: 'image',
+      model: FileModel.name,
+    });
+    await newProduct.populate({
+      path: 'category',
+      model: CategoryModel.name,
+    });
     return newProduct.save();
   }
-
-  // async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
-  //   const { minPrice, maxPrice, categoryId } = productFilterDto;
-  //   const filter: any = {};
-
-  //   if (minPrice) {
-  //     filter.price = { $gte: minPrice };
-  //   }
-  //   if (maxPrice) {
-  //     filter.price = { ...filter.price, $lte: maxPrice };
-  //   }
-  //   if (categoryId) {
-  //     filter.categoryId = categoryId;
-  //   }
-
-  //   return this.productModel.find(filter)
-  //   .populate({
-  //     path: 'imageId',
-  //     model: FileModel.name,
-  //   }).exec();
-  // }
 
   async getAllProduct(productFilterDto: ProductFilterDto): Promise<any> {
     const {
@@ -60,33 +46,37 @@ export class ProductService {
       categoryId,
       page = 1,
       pageSize = 10,
+      searchText,
     } = productFilterDto;
     const filter: any = {};
-
     if (minPrice) {
-      filter.price = { $gte: minPrice };
+      filter.price = { ...filter.price, $gte: minPrice };
     }
     if (maxPrice) {
       filter.price = { ...filter.price, $lte: maxPrice };
     }
     if (categoryId) {
-      filter.categoryId = categoryId;
+      filter.category = categoryId;
     }
-
+    if (searchText) {
+      filter.name = searchText;
+      delete filter.price;
+    }
     const skip = (page - 1) * pageSize;
-
     const products = await this.productModel
       .find(filter)
       .skip(skip)
       .limit(pageSize)
       .populate({
-        path: 'imageId',
+        path: 'image',
         model: FileModel.name,
       })
+      .populate({
+        path: 'category',
+        model: CategoryModel.name,
+      })
       .exec();
-
     const totalProducts = await this.productModel.countDocuments(filter);
-
     return {
       totalProducts,
       currentPage: page,
@@ -98,7 +88,6 @@ export class ProductService {
   async getProductById(id: string): Promise<ProductModel | null> {
     // const product = await this.productModel.findById(id).exec();
     //  console.log(product);
-
     return this.productModel.findById(id).exec();
   }
 
@@ -109,13 +98,11 @@ export class ProductService {
     const updatedProduct = await this.productModel
       .findOneAndUpdate({ _id: id }, updateProductDto, { new: true })
       .exec();
-
     if (!updatedProduct) {
       throw new NotFoundException(PRODUCT_NOT_FOUND);
     }
     return updatedProduct;
   }
-
   async deleteProduct(id: string): Promise<void> {
     await this.productModel.findByIdAndRemove(id).exec();
   }

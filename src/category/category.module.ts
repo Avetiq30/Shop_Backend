@@ -11,6 +11,7 @@ import { CategoryController } from './category.controller';
         typegooseClass: CategoryModel,
         schemaOptions: {
           collection: 'category',
+          timestamps: true,
         },
       },
     ]),
