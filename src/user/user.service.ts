@@ -4,7 +4,10 @@ import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
-import { USER_WITH_THIS_EMAIL } from './user.constants';
+import {
+  MISSING_REQUIRED_FIELDS,
+  USER_WITH_THIS_EMAIL,
+} from './user.constants';
 import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
@@ -34,12 +37,29 @@ export class UserService {
   }
 
   async registerUser(userData: CreateUserDto) {
-    const existingUser = await this.findUserByEmail(userData.email);
-    if (existingUser) {
-      throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.BAD_REQUEST);
+    try {
+      if (
+        !userData.email ||
+        !userData.password ||
+        !userData.name ||
+        !userData.lastname ||
+        !userData.phone
+      ) {
+        throw new HttpException(
+          MISSING_REQUIRED_FIELDS,
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+      const existingUser = await this.findUserByEmail(userData.email);
+      if (existingUser) {
+        throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.CONFLICT);
+      }
+      return this.createUser({ ...userData, role: 'user' });
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
     }
-    return this.createUser(userData);
   }
+
   async getUserById(id: string): Promise<UserModel | null> {
     return this.userModel.findById(id).exec();
   }
