@@ -12,6 +12,7 @@ import { BcryptService } from '../auth/bcrypt.service';
         typegooseClass: UserModel,
         schemaOptions: {
           collection: 'User',
+          timestamps: true,
         },
       },
     ]),

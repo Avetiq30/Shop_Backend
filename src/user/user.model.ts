@@ -13,9 +13,12 @@ export class UserModel {
   @prop({ required: true })
   public password!: string;
 
-  @prop({ default: Date.now })
-  public createdAt?: Date;
+  @prop({ default: 'user' })
+  public role!: string;
 
-  @prop({ default: Date.now })
-  public updatedAt?: Date;
+  @prop({ required: true })
+  public phone!: string;
+
+  @prop()
+  public address?: string;
 }
