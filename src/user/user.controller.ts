@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.dto';
@@ -18,15 +19,14 @@ export class UserController {
   async registerUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.registerUser(createUserDto);
   }
+  @Get()
+  async getAll(@Query('role') role: string) {
+    return this.userService.getAllUser(role);
+  }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
     return this.userService.getUserById(id);
-  }
-
-  @Get()
-  async getAll() {
-    return this.userService.getAllUser();
   }
 
   @Delete(':id')

@@ -6,6 +6,7 @@ import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
 import {
   MISSING_REQUIRED_FIELDS,
+  NO_ACCESS_RIGHTS,
   USER_WITH_THIS_EMAIL,
 } from './user.constants';
 import { CreateUserDto } from './dto/user.dto';
@@ -26,14 +27,6 @@ export class UserService {
     const newUser = { ...user, password: hashedPassword };
     const createdUser = new this.userModel(newUser);
     return createdUser.save();
-  }
-
-  async findUserByEmail(email: string): Promise<UserModel | null> {
-    return this.userModel.findOne({ email }).exec();
-  }
-
-  async deleteAll() {
-    return getModelForClass(UserModel).deleteMany({});
   }
 
   async registerUser(userData: CreateUserDto) {
@@ -60,14 +53,24 @@ export class UserService {
     }
   }
 
-  async getUserById(id: string): Promise<UserModel | null> {
-    return this.userModel.findById(id).exec();
+  async findUserByEmail(email: string): Promise<UserModel | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
-  async getAllUser(): Promise<UserModel[]> {
+  async getAllUser(role: string): Promise<UserModel[]> {
+    if (role !== 'admin') {
+      throw new HttpException(NO_ACCESS_RIGHTS, HttpStatus.FORBIDDEN);
+    }
     return this.userModel.find().exec();
   }
 
+  async deleteAll() {
+    return getModelForClass(UserModel).deleteMany({});
+  }
+
+  async getUserById(id: string): Promise<UserModel | null> {
+    return this.userModel.findById(id).exec();
+  }
   async deleteUserById(id: string): Promise<any> {
     return this.userModel.findByIdAndDelete(id).exec();
   }
