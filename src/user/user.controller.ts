@@ -6,8 +6,8 @@ import {
   Param,
   Delete,
   Put,
-  Req,  
-  UseGuards
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.dto';
@@ -25,8 +25,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getAll(@Req() req) {
     const role = req.user.role;
-    if(role !== 'admin'){
-      throw new Error('error')
+    if (role !== 'admin') {
+      throw new Error('error');
     }
     return this.userService.getAllUser();
   }

@@ -6,7 +6,7 @@ import { UserService } from '../src/user/user.service';
 import { UserModel } from '../src/user/user.model';
 import { BcryptService } from '../src/auth/bcrypt.service';
 import { userData } from './helpers/userHelper';
-import { USER_WITH_THIS_EMAIL } from '../src/user/user.constants';
+// import { USER_WITH_THIS_EMAIL } from '../src/user/user.constants';
 
 describe('UserController', () => {
   let app: INestApplication;
@@ -48,13 +48,13 @@ describe('UserController', () => {
         .send(userData);
       expect(HttpStatus.OK);
       console.log('----', response.body);
-      
-      if(response.body){
-      expect(response.body.password).toBeDefined();
-      expect(response.body.name).toBe(user.name);
-      expect(response.body.lastname).toBe(user.lastname);
-      expect(response.body.email).toBe(user.email);
-      } else{
+
+      if (response.body) {
+        expect(response.body.password).toBeDefined();
+        expect(response.body.name).toBe(user.name);
+        expect(response.body.lastname).toBe(user.lastname);
+        expect(response.body.email).toBe(user.email);
+      } else {
         console.error('Empty response body:', response.text);
         fail('Response body is empty');
       }

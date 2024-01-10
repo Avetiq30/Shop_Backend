@@ -4,10 +4,7 @@ import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
-import {
- 
-  USER_WITH_THIS_EMAIL,
-} from './user.constants';
+import { USER_WITH_THIS_EMAIL } from './user.constants';
 import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
@@ -40,7 +37,6 @@ export class UserService {
     }
   }
 
-  
   async getAllUser(): Promise<UserModel[]> {
     return this.userModel.find().exec();
   }
