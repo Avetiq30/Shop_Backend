@@ -35,9 +35,14 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
+    const accessToken = await this.generateAccessToken({
+      email,
+      role: user.role,
+    });
 
-    return this.generateAccessToken({ email });
+    return accessToken;
   }
+
   async logout(session): Promise<{ message: string }> {
     if (session) {
       session.destroy();

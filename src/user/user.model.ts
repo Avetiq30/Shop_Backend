@@ -13,7 +13,7 @@ export class UserModel {
   @prop({ required: true })
   public password!: string;
 
-  @prop({ default: 'user' })
+  @prop({ enum: ['admin', 'user'], default: 'user' })
   public role!: string;
 
   @prop({ required: true })
