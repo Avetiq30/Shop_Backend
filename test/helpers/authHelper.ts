@@ -9,4 +9,7 @@ export const user: UserModel = {
   lastname: 'lasttest',
   email: loginData.email,
   password: loginData.password,
+  role: undefined,
+  phone: '1234567890',
+  address: 'erevan',
 };
