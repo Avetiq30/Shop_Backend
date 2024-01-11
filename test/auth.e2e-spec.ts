@@ -39,7 +39,6 @@ describe('AuthController (e2e)', () => {
         .post('/auth/login')
         .send(loginData)
         .expect(HttpStatus.OK);
-      console.log('----', response.body);
 
       expect(response.body.token.accessToken).toBeDefined();
       expect(response.body.token.refreshToken).toBeDefined();

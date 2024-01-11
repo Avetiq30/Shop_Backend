@@ -7,6 +7,8 @@ import {
   USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
   USER_NOT_FOUND,
 } from './auth.constants';
+import { UserModel } from '../user/user.model';
+import { getModelForClass } from '@typegoose/typegoose';
 
 @Injectable()
 export class AuthService {
@@ -61,5 +63,9 @@ export class AuthService {
       session.destroy();
     }
     return { message: 'Logged out successfully' };
+  }
+
+  async deleteAll() {
+    return getModelForClass(UserModel).deleteMany({});
   }
 }

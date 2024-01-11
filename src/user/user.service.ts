@@ -26,15 +26,11 @@ export class UserService {
   }
 
   async registerUser(userData: CreateUserDto) {
-    try {
-      const existingUser = await this.findUserByEmail(userData.email);
-      if (existingUser) {
-        throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.CONFLICT);
-      }
-      return this.createUser({ ...userData, role: 'user' });
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    const existingUser = await this.findUserByEmail(userData.email);
+    if (existingUser) {
+      throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.CONFLICT);
     }
+    return this.createUser({ ...userData, role: 'user' });
   }
 
   async getAllUser(): Promise<UserModel[]> {
