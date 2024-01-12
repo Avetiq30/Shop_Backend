@@ -118,4 +118,22 @@ describe('UserController', () => {
       expect(response.body.message).toBe(UNAUTHORIZED);
     });
   });
+
+  describe('When trying to get user by id', () => {
+    it('should be success', async () => {
+      const createdUser: any = await userService.createUser(userData);
+
+      const response = await request(app.getHttpServer())
+        .get(`/user/${createdUser._id}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toBeDefined();
+      expect(response.body._id).toBe(createdUser._id.toString());
+      expect(response.body.name).toBe(createdUser.name);
+      expect(response.body.lastname).toBe(createdUser.lastname);
+      expect(response.body.email).toBe(createdUser.email);
+      expect(response.body.phone).toBe(createdUser.phone);
+      expect(response.body.address).toBe(createdUser.address);
+    });
+  });
 });

@@ -6,3 +6,5 @@ export const MISSING_REQUIRED_FIELDS =
 export const NO_ACCESS_RIGHTS =
   'You do not have permission to perform this operation';
 export const UNAUTHORIZED = 'Unauthorized access';
+export const USER_FOR_THIS_ID_NOT_FOUND =
+  'The user with the specified id was not found';

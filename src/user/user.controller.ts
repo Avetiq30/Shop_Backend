@@ -6,15 +6,11 @@ import {
   Param,
   Delete,
   Put,
-  Req,
   UseGuards,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.dto';
 import { JwtAuthGuard } from '../Jwt/jwt-auth.guard';
-import { UNAUTHORIZED } from './user.constants';
 
 @Controller('user')
 export class UserController {
@@ -26,16 +22,9 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  async getAll(@Req() req) {
-    const role = req.user.role;
-    if (role !== 'admin') {
-      throw new HttpException(UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
-    }
+  @UseGuards(new JwtAuthGuard(['admin']))
+  async getAll() {
     const users = await this.userService.getAllUser();
-    if (users.length === 0) {
-      return { statusCode: HttpStatus.OK, body: [] };
-    }
     return users;
   }
 

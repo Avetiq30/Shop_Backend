@@ -4,7 +4,10 @@ import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
-import { USER_WITH_THIS_EMAIL } from './user.constants';
+import {
+  USER_FOR_THIS_ID_NOT_FOUND,
+  USER_WITH_THIS_EMAIL,
+} from './user.constants';
 import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
@@ -34,7 +37,12 @@ export class UserService {
   }
 
   async getAllUser(): Promise<UserModel[]> {
-    return this.userModel.find().exec();
+    const users = await this.userModel.find().exec();
+
+    if (users.length === 0) {
+      return HttpStatus.OK, [];
+    }
+    return users;
   }
 
   async findUserByEmail(email: string): Promise<UserModel | null> {
@@ -46,8 +54,13 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<UserModel | null> {
-    return this.userModel.findById(id).exec();
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new HttpException(USER_FOR_THIS_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
+
   async deleteUserById(id: string): Promise<any> {
     return this.userModel.findByIdAndDelete(id).exec();
   }
