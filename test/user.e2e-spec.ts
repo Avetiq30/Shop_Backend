@@ -140,12 +140,59 @@ describe('UserController', () => {
       expect(response.body.address).toBe(createdUser.address);
     });
   });
-  describe('When trying to get user by id', () => {
-    it('should be success', async () => {
+  describe('When trying to get user by id but user not found', () => {
+    it('should be error', async () => {
       await userService.createUser(userData);
       const invalidId = '65a0e17efe87d68ad57f8ffe';
       const response = await request(app.getHttpServer())
         .get(`/user/${invalidId}`)
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(response.body.message).toBe(USER_FOR_THIS_ID_NOT_FOUND);
+    });
+  });
+
+  describe('When trying to update user by id', () => {
+    it('should be success', async () => {
+      const createdUser: any = await userService.createUser(userData);
+      const updateData = {
+        name: 'names',
+        lastname: 'lastNames',
+        email: 'newemail@mail.ru',
+        password: 'passwordssss',
+        role: undefined,
+        phone: '4363464564244',
+        address: 'Addresses',
+      };
+      const response = await request(app.getHttpServer())
+        .put(`/user/${createdUser._id}`)
+        .send(updateData)
+        .expect(HttpStatus.OK);
+      expect(response.body).toBeDefined();
+      expect(response.body._id).toBe(createdUser._id.toString());
+      expect(response.body.name).toBe(updateData.name);
+      expect(response.body.lastname).toBe(updateData.lastname);
+      expect(response.body.email).toBe(updateData.email);
+      expect(response.body.phone).toBe(updateData.phone);
+      expect(response.body.address).toBe(updateData.address);
+    });
+  });
+
+  describe('When trying to update user by id ,but user not found', () => {
+    it('should be error', async () => {
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+      const updateData = {
+        name: 'names',
+        lastname: 'lastNames',
+        email: 'newemail@mail.ru',
+        password: 'passwordssss',
+        role: undefined,
+        phone: '4363464564244',
+        address: 'Addresses',
+      };
+      const response = await request(app.getHttpServer())
+        .put(`/user/${invalidId}`)
+        .send(updateData)
         .expect(HttpStatus.NOT_FOUND);
 
       expect(response.body.message).toBe(USER_FOR_THIS_ID_NOT_FOUND);
