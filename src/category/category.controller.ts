@@ -6,16 +6,19 @@ import {
   Delete,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryModel } from './model/category.model';
 import { CreateCategoryDto } from './dto/category-create.dto';
+import { JwtAuthGuard } from '../Jwt/jwt-auth.guard';
 
-@Controller('categories')
+@Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @UseGuards(new JwtAuthGuard(['admin']))
   async createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryModel> {
