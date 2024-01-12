@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CategoryModel } from './model/category.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -17,7 +17,11 @@ export class CategoryService {
   }
 
   async getAllCategories(): Promise<any[]> {
-    return this.categoryModel.find().exec();
+    const category = await this.categoryModel.find().exec();
+    if (category.length === 0) {
+      return HttpStatus.OK, [];
+    }
+    return category;
   }
 
   async getCategoryById(id: string): Promise<CategoryModel | null> {

@@ -6,6 +6,7 @@ import { CategoryService } from '../src/category/category.service';
 import { AuthService } from '../src/auth/auth.service';
 import { UserService } from '../src/user/user.service';
 import { userDataCat, loginDataCat } from './helpers/categoryHelper';
+import { UNAUTHORIZED } from '../src/user/user.constants';
 
 describe('CategoryController (E2E)', () => {
   let app: INestApplication;
@@ -56,6 +57,39 @@ describe('CategoryController (E2E)', () => {
 
       expect(response.body).toBeDefined();
       expect(response.body.name).toBe(createCategoryDto.name);
+    });
+  });
+
+  describe('When getting all categories with admin role', () => {
+    it('should be success', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const adminToken = await authService.login(loginDataCat);
+
+      const response = await request(app.getHttpServer())
+        .get('/category')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('When trying to get all category with no admin role', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'user';
+
+      await userService.createUser(userDataCat);
+
+      const userToken = await authService.login(loginDataCat);
+      const response = await request(app.getHttpServer())
+        .get('/category')
+        .set('Authorization', `Bearer ${userToken.accessToken}`)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(response.body.message).toBe(UNAUTHORIZED);
     });
   });
 });

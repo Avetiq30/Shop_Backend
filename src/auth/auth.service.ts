@@ -43,7 +43,7 @@ export class AuthService {
     if (!isValidPassword) {
       throw new HttpException(
         USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
-        HttpStatus.FORBIDDEN,
+        HttpStatus.NOT_FOUND,
       );
     }
     const accessToken = await this.generateAccessToken({

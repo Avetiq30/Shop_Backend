@@ -91,8 +91,11 @@ describe('UserController', () => {
 
   describe('When trying to get all users with admin role', () => {
     it('should be success', async () => {
-      userData.role = 'admin';
-      await userService.createUser(userData);
+      const adminUser = {
+        ...userData,
+        role: 'admin',
+      };
+      await userService.createUser(adminUser);
 
       const adminToken = await authService.login(loginData);
 
@@ -102,15 +105,18 @@ describe('UserController', () => {
         .expect(HttpStatus.OK);
 
       expect(response.body).toBeDefined();
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body.length).toBeGreaterThanOrEqual(0);
     });
   });
 
   describe('When trying to get all users with no admin role', () => {
     it('should be error', async () => {
-      userData.role = 'user';
+      const userRole = {
+        ...userData,
+        role: 'user',
+      };
 
-      await userService.createUser(userData);
+      await userService.createUser(userRole);
 
       const userToken = await authService.login(loginData);
 

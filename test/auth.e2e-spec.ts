@@ -13,13 +13,13 @@ describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let userService: UserService;
 
-  beforeEach(async () => {
-    await userService.deleteAll();
-  });
-
   afterAll(async () => {
     await userService.deleteAll();
     await app.close();
+  });
+
+  beforeEach(async () => {
+    await userService.deleteAll();
   });
 
   beforeAll(async () => {
@@ -66,7 +66,7 @@ describe('AuthController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(loginDataInv)
-        .expect(HttpStatus.FORBIDDEN);
+        .expect(HttpStatus.NOT_FOUND);
       expect(response.body.message).toBe(USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT);
     });
   });

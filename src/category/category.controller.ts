@@ -26,6 +26,7 @@ export class CategoryController {
   }
 
   @Get()
+  @UseGuards(new JwtAuthGuard(['admin']))
   async getAllCategories(): Promise<CategoryModel[]> {
     return await this.categoryService.getAllCategories();
   }
