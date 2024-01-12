@@ -7,7 +7,11 @@ import { AuthService } from '../src/auth/auth.service';
 import { UserModel } from '../src/user/user.model';
 import { BcryptService } from '../src/auth/bcrypt.service';
 import { userData, loginData } from './helpers/userHelper';
-import { UNAUTHORIZED, USER_WITH_THIS_EMAIL } from '../src/user/user.constants';
+import {
+  UNAUTHORIZED,
+  USER_FOR_THIS_ID_NOT_FOUND,
+  USER_WITH_THIS_EMAIL,
+} from '../src/user/user.constants';
 
 describe('UserController', () => {
   let app: INestApplication;
@@ -134,6 +138,17 @@ describe('UserController', () => {
       expect(response.body.email).toBe(createdUser.email);
       expect(response.body.phone).toBe(createdUser.phone);
       expect(response.body.address).toBe(createdUser.address);
+    });
+  });
+  describe('When trying to get user by id', () => {
+    it('should be success', async () => {
+      await userService.createUser(userData);
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+      const response = await request(app.getHttpServer())
+        .get(`/user/${invalidId}`)
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(response.body.message).toBe(USER_FOR_THIS_ID_NOT_FOUND);
     });
   });
 });
