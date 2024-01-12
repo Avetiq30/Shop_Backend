@@ -198,4 +198,17 @@ describe('UserController', () => {
       expect(response.body.message).toBe(USER_FOR_THIS_ID_NOT_FOUND);
     });
   });
+
+  describe('When trying to delete user by id but user not found', () => {
+    it('should be error', async () => {
+      await userService.createUser(userData);
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+
+      const response = await request(app.getHttpServer())
+        .delete(`/user/${invalidId}`)
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(response.body.message).toBe(USER_FOR_THIS_ID_NOT_FOUND);
+    });
+  });
 });

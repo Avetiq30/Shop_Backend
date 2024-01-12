@@ -62,7 +62,11 @@ export class UserService {
   }
 
   async deleteUserById(id: string): Promise<any> {
-    return this.userModel.findByIdAndDelete(id).exec();
+    const user = await this.userModel.findByIdAndDelete(id).exec();
+    if (!user) {
+      throw new HttpException(USER_FOR_THIS_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async updateUserById(
