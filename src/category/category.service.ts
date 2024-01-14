@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CategoryModel } from './model/category.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { CreateCategoryDto } from './dto/category-create.dto';
+import { CATEGORY_FOR_THIS_ID_NOT_FOUND } from './category.constants';
+import { UpdateCategoryDto } from './dto/category-update.dto';
 
 @Injectable()
 export class CategoryService {
@@ -26,9 +28,18 @@ export class CategoryService {
 
   async updateCategoryById(
     id: string,
-    name: string,
+    categorydata: UpdateCategoryDto,
   ): Promise<CategoryModel | null> {
-    return this.categoryModel.findByIdAndUpdate({ id, name }).exec();
+    const category = await this.categoryModel
+      .findByIdAndUpdate(id, categorydata, { new: true })
+      .exec();
+    if (!category) {
+      throw new HttpException(
+        CATEGORY_FOR_THIS_ID_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return category;
   }
 
   async deleteCategoryById(id: string): Promise<void> {
