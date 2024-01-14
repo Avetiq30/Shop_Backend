@@ -5,6 +5,8 @@ import { AppModule } from '../src/app.module';
 import { CategoryService } from '../src/category/category.service';
 import { AuthService } from '../src/auth/auth.service';
 import { UserService } from '../src/user/user.service';
+import { userDataCat, loginDataCat } from './helpers/categoryHelper';
+import { UNAUTHORIZED } from '../src/user/user.constants';
 
 describe('CategoryController (E2E)', () => {
   let app: INestApplication;
@@ -12,58 +14,82 @@ describe('CategoryController (E2E)', () => {
   let authService: AuthService;
   let userService: UserService;
 
+  afterAll(async () => {
+    await authService.deleteAll();
+    await userService.deleteAll();
+    await categoryService.deleteAll();
+    await app.close();
+  });
+
+  beforeEach(async () => {
+    await userService.deleteAll();
+    await authService.deleteAll();
+    await categoryService.deleteAll();
+  });
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    categoryService = moduleFixture.get<CategoryService>(CategoryService);
     userService = moduleFixture.get<UserService>(UserService);
     authService = moduleFixture.get<AuthService>(AuthService);
+    categoryService = moduleFixture.get<CategoryService>(CategoryService);
     await app.init();
-    await userService.deleteAll();
-    await categoryService.deleteAll();
   });
 
-  async function userAndAuthFunction() {
-    const userData = {
-      name: 'test',
-      lastname: 'tests',
-      email: 'testcategory@mail.ru',
-      password: '00000',
-    };
-    await userService.createUser(userData);
-    return authService.login({
-      email: userData.email,
-      password: userData.password,
-    });
-  }
+  describe('When creating a new category with admin role', () => {
+    it('should be success', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
 
-  afterEach(async () => {
-    await categoryService.deleteAll();
-    await userService.deleteAll();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
-
-  describe('When create a categoryId', () => {
-    let token;
-    beforeAll(async () => {
-      token = await userAndAuthFunction();
-    });
-    it('should be succes', async () => {
+      const adminToken = await authService.login(loginDataCat);
       const createCategoryDto = {
-        name: 'testCategory',
+        name: 'TestCategory',
       };
+
       const response = await request(app.getHttpServer())
-        .post('/categories')
-        .set('Authorization', `Bearer ${token}`)
-        .send(createCategoryDto);
-      expect(response.status).toBe(HttpStatus.CREATED);
+        .post('/category')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .send(createCategoryDto)
+        .expect(HttpStatus.CREATED);
+
+      expect(response.body).toBeDefined();
       expect(response.body.name).toBe(createCategoryDto.name);
+    });
+  });
+
+  describe('When getting all categories with admin role', () => {
+    it('should be success', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const adminToken = await authService.login(loginDataCat);
+
+      const response = await request(app.getHttpServer())
+        .get('/category')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('When trying to get all category with no admin role', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'user';
+
+      await userService.createUser(userDataCat);
+
+      const userToken = await authService.login(loginDataCat);
+      const response = await request(app.getHttpServer())
+        .get('/category')
+        .set('Authorization', `Bearer ${userToken.accessToken}`)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(response.body.message).toBe(UNAUTHORIZED);
     });
   });
 });

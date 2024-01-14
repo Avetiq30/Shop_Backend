@@ -1,14 +1,14 @@
 import { UserModel } from '../../src/user/user.model';
 
-export const loginData = {
-  email: 'testing@mail.ru',
+export const loginDataCat = {
+  email: 'testingCategory@mail.ru',
   password: 'test123123',
 };
-export const userData: UserModel = {
+export const userDataCat: UserModel = {
   name: 'test',
   lastname: 'lasttest',
-  email: loginData.email,
-  password: loginData.password,
+  email: loginDataCat.email,
+  password: loginDataCat.password,
   role: undefined,
   phone: '1234567890',
   address: 'erevan',

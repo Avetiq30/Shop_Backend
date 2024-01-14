@@ -4,7 +4,10 @@ import { UserModel } from './user.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { getModelForClass } from '@typegoose/typegoose';
 import { BcryptService } from '../auth/bcrypt.service';
-import { USER_WITH_THIS_EMAIL } from './user.constants';
+import {
+  USER_FOR_THIS_ID_NOT_FOUND,
+  USER_WITH_THIS_EMAIL,
+} from './user.constants';
 import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
@@ -25,6 +28,18 @@ export class UserService {
     return createdUser.save();
   }
 
+  async registerUser(userData: CreateUserDto) {
+    const existingUser = await this.findUserByEmail(userData.email);
+    if (existingUser) {
+      throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.CONFLICT);
+    }
+    return this.createUser({ ...userData, role: 'user' });
+  }
+
+  async getAllUser(): Promise<UserModel[]> {
+    return this.userModel.find().exec();
+  }
+
   async findUserByEmail(email: string): Promise<UserModel | null> {
     return this.userModel.findOne({ email }).exec();
   }
@@ -33,29 +48,32 @@ export class UserService {
     return getModelForClass(UserModel).deleteMany({});
   }
 
-  async registerUser(userData: CreateUserDto) {
-    const existingUser = await this.findUserByEmail(userData.email);
-    if (existingUser) {
-      throw new HttpException(USER_WITH_THIS_EMAIL, HttpStatus.BAD_REQUEST);
-    }
-    return this.createUser(userData);
-  }
   async getUserById(id: string): Promise<UserModel | null> {
-    return this.userModel.findById(id).exec();
-  }
-
-  async getAllUser(): Promise<UserModel[]> {
-    return this.userModel.find().exec();
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new HttpException(USER_FOR_THIS_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async deleteUserById(id: string): Promise<any> {
-    return this.userModel.findByIdAndDelete(id).exec();
+    const user = await this.userModel.findByIdAndDelete(id).exec();
+    if (!user) {
+      throw new HttpException(USER_FOR_THIS_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async updateUserById(
     id: string,
     userData: CreateUserDto,
   ): Promise<UserModel | null> {
-    return this.userModel.findByIdAndUpdate(id, userData, { new: true }).exec();
+    const user = await this.userModel
+      .findByIdAndUpdate(id, userData, { new: true })
+      .exec();
+    if (!user) {
+      throw new HttpException(USER_FOR_THIS_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 }

@@ -6,10 +6,12 @@ import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { getMongoConfig } from './configs/mongo.config';
 import { FileModule } from './file/file.module';
 import { APP_PIPE } from '@nestjs/core';
+import { NestConfigModule } from './configs/config.module';
+import { NestConfigService } from './configs/config.service';
 
 @Module({
   imports: [
@@ -17,8 +19,8 @@ import { APP_PIPE } from '@nestjs/core';
       isGlobal: true,
     }),
     TypegooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
+      imports: [NestConfigModule],
+      inject: [NestConfigService],
       useFactory: getMongoConfig,
     }),
     AuthModule,

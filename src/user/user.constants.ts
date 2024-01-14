@@ -1,2 +1,10 @@
 export const USER_NOT_FOUND = 'User not found';
-export const USER_WITH_THIS_EMAIL = 'User with this email already exists';
+export const USER_WITH_THIS_EMAIL =
+  'The user with the specified email address is already registered';
+export const MISSING_REQUIRED_FIELDS =
+  'You must provide all required fields for user registration. Please ensure that you have completed all required fields.';
+export const NO_ACCESS_RIGHTS =
+  'You do not have permission to perform this operation';
+export const UNAUTHORIZED = 'Unauthorized access';
+export const USER_FOR_THIS_ID_NOT_FOUND =
+  'The user with the specified id was not found';
