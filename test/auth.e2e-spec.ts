@@ -32,7 +32,7 @@ describe('AuthController (e2e)', () => {
     await app.init();
   });
 
-  describe('When trying login in', () => {
+  describe('When trying login in and return access and refresh tokens', () => {
     it('should be success', async () => {
       await userService.createUser(user);
       const response = await request(app.getHttpServer())

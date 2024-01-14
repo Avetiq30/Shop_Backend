@@ -21,12 +21,10 @@ describe('UserController', () => {
 
   afterAll(async () => {
     await userService.deleteAll();
-    await authService.deleteAll();
     await app.close();
   });
   beforeEach(async () => {
     await userService.deleteAll();
-    await authService.deleteAll();
   });
 
   beforeAll(async () => {
@@ -91,11 +89,12 @@ describe('UserController', () => {
 
   describe('When trying to get all users with admin role', () => {
     it('should be success', async () => {
-      const adminUser = {
-        ...userData,
-        role: 'admin',
-      };
-      await userService.createUser(adminUser);
+      userData.role = 'admin';
+
+      await userService.createUser(userData);
+
+      console.log('Sending login request with data:', loginData);
+      console.log(loginData);
 
       const adminToken = await authService.login(loginData);
 
@@ -103,6 +102,7 @@ describe('UserController', () => {
         .get('/user')
         .set('Authorization', `Bearer ${adminToken.accessToken}`)
         .expect(HttpStatus.OK);
+      console.log('Received response:', response.body);
 
       expect(response.body).toBeDefined();
       expect(response.body.length).toBeGreaterThanOrEqual(0);
@@ -111,12 +111,9 @@ describe('UserController', () => {
 
   describe('When trying to get all users with no admin role', () => {
     it('should be error', async () => {
-      const userRole = {
-        ...userData,
-        role: 'user',
-      };
+      userData.role = 'user';
 
-      await userService.createUser(userRole);
+      await userService.createUser(userData);
 
       const userToken = await authService.login(loginData);
 

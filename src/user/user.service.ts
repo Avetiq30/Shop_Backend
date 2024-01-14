@@ -37,12 +37,7 @@ export class UserService {
   }
 
   async getAllUser(): Promise<UserModel[]> {
-    const users = await this.userModel.find().exec();
-
-    if (users.length === 0) {
-      return HttpStatus.OK, [];
-    }
-    return users;
+    return this.userModel.find().exec();
   }
 
   async findUserByEmail(email: string): Promise<UserModel | null> {

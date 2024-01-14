@@ -9,6 +9,7 @@ import {
 } from './auth.constants';
 import { UserModel } from '../user/user.model';
 import { getModelForClass } from '@typegoose/typegoose';
+import { NestConfigService } from '../configs/config.service';
 
 @Injectable()
 export class AuthService {
@@ -16,14 +17,19 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly bcryptService: BcryptService,
+    private readonly nestConfigService: NestConfigService,
   ) {}
 
   async generateAccessToken(payload: any): Promise<string> {
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      expiresIn: this.nestConfigService.expiresInAccessToken,
+    });
   }
 
   async generateRefreshToken(payload: any): Promise<string> {
-    return this.jwtService.sign({ payload }, { expiresIn: '30d' });
+    return this.jwtService.sign(payload, {
+      expiresIn: this.nestConfigService.expiresInRefreshToken,
+    });
   }
 
   async login(
@@ -54,7 +60,6 @@ export class AuthService {
       email,
       role: user.role,
     });
-
     return { accessToken, refreshToken };
   }
 
