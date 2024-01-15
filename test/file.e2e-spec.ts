@@ -103,4 +103,50 @@ describe('FileController (E2E)', () => {
       expect(response.body.message).toBe(UNAUTHORIZED);
     });
   });
+
+  describe('When deleting a file with admin role', () => {
+    it('should be success', async () => {
+      userData.role = 'admin';
+      await userService.createUser(userData);
+
+      const adminToken = await authService.login(loginData);
+
+      const uploadResponse = await request(app.getHttpServer())
+        .post('/file')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .attach('file', 'uploads/1910e109e146.png')
+        .expect(HttpStatus.CREATED);
+
+      const deleteResponse = await request(app.getHttpServer())
+        .delete(`/file/${uploadResponse.body._id}`)
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(deleteResponse.body).toBeDefined();
+    });
+  });
+
+  describe('When deleting a file with admin role, but file not found', () => {
+    it('should be error', async () => {
+      userData.role = 'admin';
+      await userService.createUser(userData);
+
+      const adminToken = await authService.login(loginData);
+
+      await request(app.getHttpServer())
+        .post('/file')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .attach('file', 'uploads/1910e109e146.png')
+        .expect(HttpStatus.CREATED);
+
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+
+      const deleteResponse = await request(app.getHttpServer())
+        .delete(`/file/${invalidId}`)
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(deleteResponse.body).toBeDefined();
+    });
+  });
 });

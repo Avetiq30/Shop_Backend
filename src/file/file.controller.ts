@@ -43,6 +43,7 @@ export class FileController {
   }
 
   @Delete(':id')
+  @UseGuards(new JwtAuthGuard(['admin']))
   async deleteFileById(@Param('id') id: string) {
     const deletedFile = await this.fileService.deleteFileById(id);
     return deletedFile;

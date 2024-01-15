@@ -182,8 +182,6 @@ describe('CategoryController (E2E)', () => {
         .set('Authorization', `Bearer ${accessToken.accessToken}`)
         .send(categorydto);
 
-      categorydto.name = 'updateCategory';
-
       const deleteCategoryResponse = await request(app.getHttpServer())
         .delete(`/category/${createCategoryResponse.body._id}`)
         .set('Authorization', `Bearer ${accessToken.accessToken}`)
