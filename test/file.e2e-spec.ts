@@ -72,4 +72,35 @@ describe('FileController (E2E)', () => {
       expect(response.body.message).toBe(UNAUTHORIZED);
     });
   });
+  describe('When getting all file with admin role', () => {
+    it('should be success', async () => {
+      userData.role = 'admin';
+      await userService.createUser(userData);
+
+      const adminToken = await authService.login(loginData);
+      const response = await request(app.getHttpServer())
+        .get('/file')
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('When fetching the file list with no admin role', () => {
+    it('should return error', async () => {
+      userData.role = 'user';
+      await userService.createUser(userData);
+
+      const userToken = await authService.login(loginData);
+
+      const response = await request(app.getHttpServer())
+        .get('/file')
+        .set('Authorization', `Bearer ${userToken.accessToken}`)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(response.body.message).toBe(UNAUTHORIZED);
+    });
+  });
 });
