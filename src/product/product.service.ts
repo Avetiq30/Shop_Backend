@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProductModel } from './model/product.model';
 import { ReturnModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
@@ -24,7 +29,7 @@ export class ProductService {
       createProductDto.category,
     );
     if (!category) {
-      throw new NotFoundException(NOT_FOUND_CATEGORY);
+      throw new HttpException(NOT_FOUND_CATEGORY, HttpStatus.NOT_FOUND);
     }
 
     const newProduct = new this.productModel(createProductDto);

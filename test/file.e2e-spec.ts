@@ -7,6 +7,7 @@ import { AuthService } from '../src/auth/auth.service';
 import { UserService } from '../src/user/user.service';
 import { userData, loginData } from './helpers/fileHelper';
 import { UNAUTHORIZED } from '../src/user/user.constants';
+import { readFileSync } from 'fs';
 
 describe('FileController (E2E)', () => {
   let app: INestApplication;
@@ -27,14 +28,12 @@ describe('FileController (E2E)', () => {
   });
 
   afterAll(async () => {
-    await authService.deleteAll();
     await userService.deleteAll();
     await fileService.deleteAll();
     await app.close();
   });
 
   beforeEach(async () => {
-    await authService.deleteAll();
     await userService.deleteAll();
     await fileService.deleteAll();
   });
@@ -46,10 +45,12 @@ describe('FileController (E2E)', () => {
 
       const adminToken = await authService.login(loginData);
 
+      const fileBuffer = readFileSync('uploads/1910e109e146.png');
+
       const response = await request(app.getHttpServer())
         .post('/file')
         .set('Authorization', `Bearer ${adminToken.accessToken}`)
-        .attach('file', 'uploads/1910e109e146.png')
+        .attach('file', fileBuffer, { filename: '1910e109e146.png' })
         .expect(HttpStatus.CREATED);
 
       expect(response.body).toBeDefined();
@@ -63,10 +64,12 @@ describe('FileController (E2E)', () => {
 
       const userToken = await authService.login(loginData);
 
+      const fileBuffer = readFileSync('uploads/1910e109e146.png');
+
       const response = await request(app.getHttpServer())
         .post('/file')
         .set('Authorization', `Bearer ${userToken.accessToken}`)
-        .attach('file', 'uploads/1910e109e146.png')
+        .attach('file', fileBuffer, { filename: '1910e109e146.png' })
         .expect(HttpStatus.UNAUTHORIZED);
 
       expect(response.body.message).toBe(UNAUTHORIZED);
@@ -150,3 +153,5 @@ describe('FileController (E2E)', () => {
     });
   });
 });
+
+//     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",

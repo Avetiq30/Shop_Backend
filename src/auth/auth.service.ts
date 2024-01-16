@@ -38,6 +38,7 @@ export class AuthService {
     const { email, password } = authLoginDto;
 
     const user = await this.userService.findUserByEmail(email);
+
     if (!user) {
       throw new HttpException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -49,7 +50,7 @@ export class AuthService {
     if (!isValidPassword) {
       throw new HttpException(
         USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.UNAUTHORIZED,
       );
     }
     const accessToken = await this.generateAccessToken({

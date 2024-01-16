@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductModel } from './model/product.model';
@@ -16,17 +17,20 @@ import { ProductCreateDto } from './dto/product-create.dto';
 import { ProductUpdateDto } from './dto/product-update.dto';
 import { NOT_FOUND_PRODUCT_BY_ID } from './prdouct.constants';
 import { ProductFilterDto } from './dto/product-filter.dto';
+import { JwtAuthGuard } from '../Jwt/jwt-auth.guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @UseGuards(new JwtAuthGuard(['admin']))
   async createProduct(
     @Body() createProductDto: ProductCreateDto,
   ): Promise<ProductModel> {
     return this.productService.createProduct(createProductDto);
   }
+
   @Get()
   async getAllProduct(
     @Query() productFilterDto: ProductFilterDto,
