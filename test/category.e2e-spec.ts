@@ -7,6 +7,7 @@ import { AuthService } from '../src/auth/auth.service';
 import { UserService } from '../src/user/user.service';
 import { userDataCat, loginDataCat } from './helpers/categoryHelper';
 import { UNAUTHORIZED } from '../src/user/user.constants';
+import { CATEGORY_FOR_THIS_ID_NOT_FOUND } from '../src/category/category.constants';
 
 describe('CategoryController (E2E)', () => {
   let app: INestApplication;
@@ -80,7 +81,6 @@ describe('CategoryController (E2E)', () => {
   describe('When trying to get all category with no admin role', () => {
     it('should be error', async () => {
       userDataCat.role = 'user';
-
       await userService.createUser(userDataCat);
 
       const userToken = await authService.login(loginDataCat);
@@ -90,6 +90,81 @@ describe('CategoryController (E2E)', () => {
         .expect(HttpStatus.UNAUTHORIZED);
 
       expect(response.body.message).toBe(UNAUTHORIZED);
+    });
+  });
+
+  describe('When updating a category with admin role', () => {
+    it('should be success', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const accessToken = await authService.login(loginDataCat);
+      const categorydto = {
+        name: 'test',
+      };
+      const createCategoryResponse = await request(app.getHttpServer())
+        .post('/category')
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      categorydto.name = 'updateCategory';
+
+      const updateCategoryResponse = await request(app.getHttpServer())
+        .put(`/category/${createCategoryResponse.body._id}`)
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      expect(updateCategoryResponse.body).toBeDefined();
+      expect(updateCategoryResponse.body.name).toBe(categorydto.name);
+    });
+  });
+
+  describe('When updating a category with no admin role', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'user';
+      await userService.createUser(userDataCat);
+
+      const accessToken = await authService.login(loginDataCat);
+      const categorydto = {
+        name: 'test',
+      };
+      const createCategoryResponse = await request(app.getHttpServer())
+        .post('/category')
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      categorydto.name = 'updateCategory';
+
+      const updateCategoryResponse = await request(app.getHttpServer())
+        .put(`/category/${createCategoryResponse.body._id}`)
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(updateCategoryResponse.body.message).toBe(UNAUTHORIZED);
+    });
+  });
+
+  describe('When updating a category , but category not found', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const accessToken = await authService.login(loginDataCat);
+      const categorydto = {
+        name: 'test',
+      };
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+
+      const updateCategoryResponse = await request(app.getHttpServer())
+        .put(`/category/${invalidId}`)
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      expect(updateCategoryResponse.status).toBe(HttpStatus.NOT_FOUND);
+      expect(updateCategoryResponse.body.message).toBe(
+        CATEGORY_FOR_THIS_ID_NOT_FOUND,
+      );
     });
   });
 });

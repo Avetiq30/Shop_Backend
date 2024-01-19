@@ -25,6 +25,7 @@ describe('UserController', () => {
   });
   beforeEach(async () => {
     await userService.deleteAll();
+    await authService.deleteAll();
   });
 
   beforeAll(async () => {
@@ -93,16 +94,12 @@ describe('UserController', () => {
 
       await userService.createUser(userData);
 
-      console.log('Sending login request with data:', loginData);
-      console.log(loginData);
-
       const adminToken = await authService.login(loginData);
 
       const response = await request(app.getHttpServer())
         .get('/user')
         .set('Authorization', `Bearer ${adminToken.accessToken}`)
         .expect(HttpStatus.OK);
-      console.log('Received response:', response.body);
 
       expect(response.body).toBeDefined();
       expect(response.body.length).toBeGreaterThanOrEqual(0);

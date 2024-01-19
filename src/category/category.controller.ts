@@ -11,6 +11,7 @@ import {
 import { CategoryService } from './category.service';
 import { CategoryModel } from './model/category.model';
 import { CreateCategoryDto } from './dto/category-create.dto';
+import { UpdateCategoryDto } from './dto/category-update.dto';
 import { JwtAuthGuard } from '../Jwt/jwt-auth.guard';
 
 @Controller('category')
@@ -37,11 +38,12 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @UseGuards(new JwtAuthGuard(['admin']))
   async updateCategoryById(
     @Param('id') id: string,
-    @Body('name') name: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<CategoryModel | null> {
-    return await this.categoryService.updateCategoryById(id, name);
+    return await this.categoryService.updateCategoryById(id, updateCategoryDto);
   }
 
   @Delete(':id')
