@@ -47,6 +47,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @UseGuards(new JwtAuthGuard(['admin']))
   async deleteCategoryById(@Param('id') id: string): Promise<void> {
     await this.categoryService.deleteCategoryById(id);
   }

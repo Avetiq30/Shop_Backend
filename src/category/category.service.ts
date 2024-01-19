@@ -42,8 +42,17 @@ export class CategoryService {
     return category;
   }
 
-  async deleteCategoryById(id: string): Promise<void> {
-    await this.categoryModel.findByIdAndDelete({ _id: id }).exec();
+  async deleteCategoryById(id: string): Promise<any> {
+    const category = await this.categoryModel
+      .findByIdAndDelete({ _id: id })
+      .exec();
+    if (!category) {
+      throw new HttpException(
+        CATEGORY_FOR_THIS_ID_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return category;
   }
 
   async deleteAll() {

@@ -23,8 +23,8 @@ describe('CategoryController (E2E)', () => {
   });
 
   beforeEach(async () => {
-    await userService.deleteAll();
     await authService.deleteAll();
+    await userService.deleteAll();
     await categoryService.deleteAll();
   });
 
@@ -163,6 +163,76 @@ describe('CategoryController (E2E)', () => {
 
       expect(updateCategoryResponse.status).toBe(HttpStatus.NOT_FOUND);
       expect(updateCategoryResponse.body.message).toBe(
+        CATEGORY_FOR_THIS_ID_NOT_FOUND,
+      );
+    });
+  });
+
+  describe('When deleting a category with admin rol', () => {
+    it('should be success', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const accessToken = await authService.login(loginDataCat);
+      const categorydto = {
+        name: 'test',
+      };
+      const createCategoryResponse = await request(app.getHttpServer())
+        .post('/category')
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      categorydto.name = 'updateCategory';
+
+      const deleteCategoryResponse = await request(app.getHttpServer())
+        .delete(`/category/${createCategoryResponse.body._id}`)
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto)
+        .expect(HttpStatus.OK);
+
+      expect(deleteCategoryResponse.body).toBeDefined();
+    });
+  });
+
+  describe('When deleting a category with no admin role', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'user';
+      await userService.createUser(userDataCat);
+
+      const accessToken = await authService.login(loginDataCat);
+      const categorydto = {
+        name: 'test',
+      };
+      const createCategoryResponse = await request(app.getHttpServer())
+        .post('/category')
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto);
+
+      categorydto.name = 'updateCategory';
+
+      const deleteCategoryResponse = await request(app.getHttpServer())
+        .delete(`/category/${createCategoryResponse.body._id}`)
+        .set('Authorization', `Bearer ${accessToken.accessToken}`)
+        .send(categorydto)
+        .expect(HttpStatus.UNAUTHORIZED);
+      expect(deleteCategoryResponse.body.message).toBe(UNAUTHORIZED);
+    });
+  });
+
+  describe('When trying to delete category by id but category not found', () => {
+    it('should be error', async () => {
+      userDataCat.role = 'admin';
+      await userService.createUser(userDataCat);
+
+      const adminToken = await authService.login(loginDataCat);
+      const invalidId = '65a0e17efe87d68ad57f8ffe';
+
+      const deleteCategoryResponse = await request(app.getHttpServer())
+        .delete(`/category/${invalidId}`)
+        .set('Authorization', `Bearer ${adminToken.accessToken}`)
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(deleteCategoryResponse.body.message).toBe(
         CATEGORY_FOR_THIS_ID_NOT_FOUND,
       );
     });
