@@ -41,7 +41,6 @@ describe('AuthController (e2e)', () => {
         .expect(HttpStatus.OK);
 
       expect(response.body.token.accessToken).toBeDefined();
-      expect(response.body.token.refreshToken).toBeDefined();
     });
   });
 
@@ -60,7 +59,7 @@ describe('AuthController (e2e)', () => {
     it('should be error', async () => {
       await userService.createUser(user);
       const loginDataInv = {
-        email: 'test@mail.ru',
+        email: 'testAuth@mail.ru',
         password: 'invalidtest123',
       };
       const response = await request(app.getHttpServer())

@@ -1,7 +1,7 @@
 import { UserModel } from '../../src/user/user.model';
 
 export const loginData = {
-  email: 'testUser@mail.ru',
+  email: 'testFile@mail.ru',
   password: 'test123123',
 };
 export const userData: UserModel = {

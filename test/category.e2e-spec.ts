@@ -15,6 +15,18 @@ describe('CategoryController (E2E)', () => {
   let authService: AuthService;
   let userService: UserService;
 
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    userService = moduleFixture.get<UserService>(UserService);
+    authService = moduleFixture.get<AuthService>(AuthService);
+    categoryService = moduleFixture.get<CategoryService>(CategoryService);
+    await app.init();
+  });
+
   afterAll(async () => {
     await authService.deleteAll();
     await userService.deleteAll();
@@ -26,18 +38,6 @@ describe('CategoryController (E2E)', () => {
     await authService.deleteAll();
     await userService.deleteAll();
     await categoryService.deleteAll();
-  });
-
-  beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    userService = moduleFixture.get<UserService>(UserService);
-    authService = moduleFixture.get<AuthService>(AuthService);
-    categoryService = moduleFixture.get<CategoryService>(CategoryService);
-    await app.init();
   });
 
   describe('When creating a new category with admin role', () => {
@@ -181,8 +181,6 @@ describe('CategoryController (E2E)', () => {
         .post('/category')
         .set('Authorization', `Bearer ${accessToken.accessToken}`)
         .send(categorydto);
-
-      categorydto.name = 'updateCategory';
 
       const deleteCategoryResponse = await request(app.getHttpServer())
         .delete(`/category/${createCategoryResponse.body._id}`)

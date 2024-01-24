@@ -67,10 +67,12 @@ describe('UserController', () => {
 
   describe('When trying to register new user and user email already exist', () => {
     it('should be error', async () => {
+      userData.role = 'admin';
+
       await userService.createUser(userData);
 
-      const loginData = {
-        email: 'testing@mail.ru',
+      const userData2 = {
+        email: 'testUser@mail.ru',
         password: 'test123123',
         name: 'name',
         lastname: 'lastname',
@@ -81,7 +83,7 @@ describe('UserController', () => {
 
       const response = await request(app.getHttpServer())
         .post('/user/register')
-        .send(loginData)
+        .send(userData2)
         .expect(HttpStatus.CONFLICT);
 
       expect(response.body.message).toBe(USER_WITH_THIS_EMAIL);
