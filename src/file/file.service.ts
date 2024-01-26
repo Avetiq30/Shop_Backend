@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { FileModel } from './file.model';
-import { INVALID_FILE_FORMAT } from './file.constants';
+import { FILE_NOT_FOUND, INVALID_FILE_FORMAT } from './file.constants';
 
 @Injectable()
 export class FileService {
@@ -43,7 +43,7 @@ export class FileService {
   async deleteFileById(id: string) {
     const deletedFile = await this.fileModel.findByIdAndDelete(id);
     if (!deletedFile) {
-      throw new Error('File not found');
+      throw new HttpException(FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     return deletedFile;
   }

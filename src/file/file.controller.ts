@@ -27,6 +27,7 @@ export class FileController {
   }
 
   @Get(':id')
+  @UseGuards(new JwtAuthGuard(['admin']))
   async getFileById(@Param('id') id: string) {
     const file = await this.fileService.getFileById(id);
     if (!file) {
@@ -36,11 +37,13 @@ export class FileController {
   }
 
   @Get()
+  @UseGuards(new JwtAuthGuard(['admin']))
   async getFileList(): Promise<FileModel[]> {
     return await this.fileService.getFileList();
   }
 
   @Delete(':id')
+  @UseGuards(new JwtAuthGuard(['admin']))
   async deleteFileById(@Param('id') id: string) {
     const deletedFile = await this.fileService.deleteFileById(id);
     return deletedFile;

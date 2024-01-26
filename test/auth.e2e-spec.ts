@@ -5,8 +5,8 @@ import { AppModule } from '../src/app.module';
 import { UserService } from '../src/user/user.service';
 import { loginData, user } from './helpers/authHelper';
 import {
-  USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
   USER_NOT_FOUND,
+  USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT,
 } from '../src/auth/auth.constants';
 
 describe('AuthController (e2e)', () => {
@@ -65,7 +65,7 @@ describe('AuthController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(loginDataInv)
-        .expect(HttpStatus.NOT_FOUND);
+        .expect(HttpStatus.UNAUTHORIZED);
       expect(response.body.message).toBe(USER_PASSWORD_OR_EMAIL_IS_NOT_CORRECT);
     });
   });

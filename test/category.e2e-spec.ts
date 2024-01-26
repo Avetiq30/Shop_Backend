@@ -28,14 +28,12 @@ describe('CategoryController (E2E)', () => {
   });
 
   afterAll(async () => {
-    await authService.deleteAll();
     await userService.deleteAll();
     await categoryService.deleteAll();
     await app.close();
   });
 
   beforeEach(async () => {
-    await authService.deleteAll();
     await userService.deleteAll();
     await categoryService.deleteAll();
   });
@@ -78,7 +76,7 @@ describe('CategoryController (E2E)', () => {
     });
   });
 
-  describe('When trying to get all category with no admin role', () => {
+  describe('When attempting to retrieve all categories without the admin role', () => {
     it('should be error', async () => {
       userDataCat.role = 'user';
       await userService.createUser(userDataCat);
@@ -181,8 +179,6 @@ describe('CategoryController (E2E)', () => {
         .post('/category')
         .set('Authorization', `Bearer ${accessToken.accessToken}`)
         .send(categorydto);
-
-      categorydto.name = 'updateCategory';
 
       const deleteCategoryResponse = await request(app.getHttpServer())
         .delete(`/category/${createCategoryResponse.body._id}`)

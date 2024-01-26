@@ -25,7 +25,6 @@ describe('UserController', () => {
   });
   beforeEach(async () => {
     await userService.deleteAll();
-    await authService.deleteAll();
   });
 
   beforeAll(async () => {
@@ -125,7 +124,7 @@ describe('UserController', () => {
     });
   });
 
-  describe('When trying to get user by id', () => {
+  describe('When trying to get user by id and userId is existing', () => {
     it('should be success', async () => {
       const createdUser: any = await userService.createUser(userData);
 
@@ -142,6 +141,7 @@ describe('UserController', () => {
       expect(response.body.address).toBe(createdUser.address);
     });
   });
+
   describe('When trying to get user by id but user not found', () => {
     it('should be error', async () => {
       await userService.createUser(userData);
